@@ -6,6 +6,8 @@ import 'package:chatgpt_gui/models/message.dart';
 class ChatScreen extends StatelessWidget {
   ChatScreen({super.key});
 
+  final _textController = TextEditingController();
+
   final List<Message> messages = [
     Message(content: "Hello", isUser: true, timestamp: DateTime.now()),
     Message(content: "How are you?", isUser: false, timestamp: DateTime.now()),
@@ -40,10 +42,16 @@ class ChatScreen extends StatelessWidget {
               ),
             )
             , TextField(
+              controller: _textController,
               decoration: InputDecoration(
                   hintText: 'Type a message', // 显示在输入框内的提示文字
                   suffixIcon: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // 这里处理发送事件
+                      if (_textController.text.isNotEmpty) {
+                        _sendMessage(_textController.text);
+                      }
+                    },
                     icon: const Icon(
                       Icons.send,
                     ),
@@ -53,6 +61,13 @@ class ChatScreen extends StatelessWidget {
         ),
       )
     );
+  }
+
+  _sendMessage(String content) {
+    final message =
+        Message(content: content, isUser: true, timestamp: DateTime.now());
+    messages.add(message);
+    _textController.clear();
   }
 }
 
