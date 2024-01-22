@@ -30,35 +30,7 @@ class ChatScreen extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 itemBuilder: (context, index) {
-                  // return Text("Message $index");
-                  return Row(
-                    children: [
-                      CircleAvatar(
-                        // backgroundImage: NetworkImage(
-                        //   'https://picsum.photos/40/40',
-                        // ),
-                        backgroundColor: messages[index].isUser ? Colors.blue : Colors.grey,
-                        foregroundColor: Colors.white,
-                        child: Text(messages[index].isUser ? 'You':'GPT', style: TextStyle(fontSize: 16)),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              messages[index].isUser ? 'You' : 'GPT',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                            Text(
-                              // 'This is a message',
-                              messages[index].content,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                  ]);
+                  return MessageItem(message: messages[index]);
                 },
                 itemCount: messages.length, // 消息数量
                 separatorBuilder: (context, index) => const Divider(
@@ -80,6 +52,45 @@ class ChatScreen extends StatelessWidget {
           ],
         ),
       )
+    );
+  }
+}
+
+class MessageItem extends StatelessWidget {
+  const MessageItem({super.key, required this.message});
+
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          // backgroundImage: NetworkImage(
+          //   'https://picsum.photos/40/40',
+          // ),
+          backgroundColor: message.isUser ? Colors.blue : Colors.grey,
+          foregroundColor: Colors.white,
+          child: Text(message.isUser ? 'You':'GPT', style: TextStyle(fontSize: 16)),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                message.isUser ? 'You' : 'GPT',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              Text(
+                // 'This is a message',
+                message.content,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
