@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 // import 'widgets/chat_screen.dart';
 import 'package:chatgpt_gui/widgets/chat_screen.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
+// void main() {
+//   // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
+//   ProviderScope(child: MyApp());
+//   // runApp(const MyApp());
+// }
 void main() {
-  runApp(const MyApp());
+  // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

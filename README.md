@@ -7,3 +7,8 @@ A simple ChatGPT GUI Project.
 ```bash
 flutter run -d macos
 ```
+
+## components
+```
+flutter pub add hooks_riverpod dev:custom_lint dev:riverpod_lint
+```

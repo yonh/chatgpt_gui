@@ -1,25 +1,31 @@
-import 'dart:math';
-
+import 'package:chatgpt_gui/states/message_state.dart';
 import 'package:flutter/material.dart';
 import 'package:chatgpt_gui/models/message.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../states/message_state.dart';
 
-class ChatScreen extends StatelessWidget {
+// 我们在创建界面时，为了快速实现页面效果，选择使用了简单的StatelessWidget组件。
+// 而StatelessWidget 是不可变的，这意味着它们的属性在对象创建时就被固定了，并且在整个生命周期内保持不变。
+// 当父组件的状态发生变化时，StatelessWidget可能会被销毁并重新创建。
+// class ChatScreen extends StatelessWidget {
+class ChatScreen extends HookConsumerWidget {
   ChatScreen({super.key});
 
   final _textController = TextEditingController();
 
-  final List<Message> messages = [
-    Message(content: "Hello", isUser: true, timestamp: DateTime.now()),
-    Message(content: "How are you?", isUser: false, timestamp: DateTime.now()),
-    Message(
-        content: "Fine,Thank you. And you?",
-        isUser: true,
-        timestamp: DateTime.now()),
-    Message(content: "I am fine.", isUser: false, timestamp: DateTime.now()),
-  ];
+  // final List<Message> messages = [
+  //   Message(content: "Hello", isUser: true, timestamp: DateTime.now()),
+  //   Message(content: "How are you?", isUser: false, timestamp: DateTime.now()),
+  //   Message(
+  //       content: "Fine,Thank you. And you?",
+  //       isUser: true,
+  //       timestamp: DateTime.now()),
+  //   Message(content: "I am fine.", isUser: false, timestamp: DateTime.now()),
+  // ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final messages = ref.watch(messageProvider);  // 获取数据
     // return Container();
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +55,7 @@ class ChatScreen extends StatelessWidget {
                     onPressed: () {
                       // 这里处理发送事件
                       if (_textController.text.isNotEmpty) {
-                        _sendMessage(_textController.text);
+                        _sendMessage(ref, _textController.text);
                       }
                     },
                     icon: const Icon(
@@ -63,10 +69,11 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
-  _sendMessage(String content) {
+  _sendMessage(WidgetRef ref, String content) {
     final message =
         Message(content: content, isUser: true, timestamp: DateTime.now());
-    messages.add(message);
+    // messages.add(message);
+    ref.read(messageProvider.notifier).addMessage(message);// 添加数据
     _textController.clear();
   }
 }
