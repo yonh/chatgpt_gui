@@ -1,8 +1,10 @@
+import 'package:chatgpt_gui/injection.dart';
 import 'package:chatgpt_gui/states/message_state.dart';
 import 'package:flutter/material.dart';
 import 'package:chatgpt_gui/models/message.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../states/message_state.dart';
+import '../services/chatgpt_service.dart';
 
 // 我们在创建界面时，为了快速实现页面效果，选择使用了简单的StatelessWidget组件。
 // 而StatelessWidget 是不可变的，这意味着它们的属性在对象创建时就被固定了，并且在整个生命周期内保持不变。
@@ -75,6 +77,15 @@ class ChatScreen extends HookConsumerWidget {
     // messages.add(message);
     ref.read(messageProvider.notifier).addMessage(message);// 添加数据
     _textController.clear();
+    _requestChatGPT(ref, content);
+  }
+
+  _requestChatGPT(WidgetRef ref, String content) async {
+    final res = await chatgpt.sendChat(content);
+    final text = res.choices.first.message?.content ?? "";
+    final message =
+        Message(content: text, isUser: false, timestamp: DateTime.now());
+    ref.read(messageProvider.notifier).addMessage(message);
   }
 }
 
@@ -86,6 +97,8 @@ class MessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         CircleAvatar(
           // backgroundImage: NetworkImage(
@@ -96,20 +109,26 @@ class MessageItem extends StatelessWidget {
           child: Text(message.isUser ? 'You':'GPT', style: TextStyle(fontSize: 16)),
         ),
         const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                message.isUser ? 'You' : 'GPT',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              Text(
-                // 'This is a message',
-                message.content,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
+        // Expanded(
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       Text(
+        //         message.isUser ? 'You' : 'GPT',
+        //         style: Theme.of(context).textTheme.labelLarge,
+        //       ),
+        //       Text(
+        //         // 'This is a message',
+        //         message.content,
+        //         style: Theme.of(context).textTheme.bodyMedium,
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        Flexible(
+          child: Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: Text(message.content),
           ),
         ),
       ],
