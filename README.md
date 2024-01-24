@@ -3,6 +3,7 @@
 A simple ChatGPT GUI Project.
 
 ## Getting Started
+copy .env.example to .env and fill in the values
 
 ```bash
 flutter run -d macos
