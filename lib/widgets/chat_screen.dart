@@ -74,8 +74,9 @@ class ChatScreen extends HookConsumerWidget {
   }
 
   _sendMessage(WidgetRef ref, String content) {
-    final message =
-        Message(content: content, isUser: true, timestamp: DateTime.now());
+    final id = uuid.v4();
+    final message = Message(
+        id: id, content: content, isUser: true, timestamp: DateTime.now());
     // messages.add(message);
     ref.read(messageProvider.notifier).addMessage(message); // 添加数据
     _textController.clear();
@@ -85,11 +86,17 @@ class ChatScreen extends HookConsumerWidget {
   _requestChatGPT(WidgetRef ref, String content) async {
     ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
     try {
-      final res = await chatgpt.sendChat(content);
-      final text = res.choices.first.message?.content ?? "";
-      final message =
-          Message(content: text, isUser: false, timestamp: DateTime.now());
-      ref.read(messageProvider.notifier).addMessage(message);
+      final id = uuid.v4();
+      //final res = await chatgpt.sendChat(content);
+      await chatgpt.streamChat(content, onSuccess: (text) {
+        final message = Message(
+            id: id, content: text, isUser: false, timestamp: DateTime.now());
+        ref.read(messageProvider.notifier).upsertMessage(message);
+      });
+      //final text = res.choices.first.message?.content ?? "";
+      // final message = Message(
+      //     id: id, content: text, isUser: false, timestamp: DateTime.now());
+      // ref.read(messageProvider.notifier).addMessage(message);
     } catch (err) {
       logger.e("request ChatGPT error:", error: err);
     } finally {

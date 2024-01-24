@@ -1,4 +1,5 @@
 import 'package:chatgpt_gui/env/env.dart';
+import 'package:flutter/material.dart';
 import 'package:openai_api/openai_api.dart';
 
 class ChatGPTService {
@@ -23,5 +24,26 @@ class ChatGPTService {
       )
     ]);
     return await client.sendChatCompletion(request);
+  }
+
+  Future streamChat(
+    String content, {
+    Function(String text)? onSuccess,
+  }) async {
+    final request = ChatCompletionRequest(
+        model: Models.gpt3_5Turbo,
+        stream: true,
+        messages: [
+          ChatMessage(
+            content: content,
+            role: ChatMessageRole.user,
+          )
+        ]);
+    return await client.sendChatCompletionStream(request, onSuccess: (p) {
+      final text = p.choices.first.delta?.content;
+      if (text != null) {
+        onSuccess?.call(text);
+      }
+    });
   }
 }

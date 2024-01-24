@@ -40,6 +40,7 @@ dependencies:
   openai_api: ^0.1.2
   envied: ^0.3.0+3
   logger: ^2.0.2+1
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:
