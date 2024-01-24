@@ -39,6 +39,7 @@ dependencies:
   flutter_hooks: ^0.18.0
   openai_api: ^0.1.2
   envied: ^0.3.0+3
+  logger: ^2.0.2+1
 
 dev_dependencies:
   flutter_test:

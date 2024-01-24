@@ -15,4 +15,5 @@ flutter pub run build_runner build --delete-conflicting-outputs
 ```
 flutter pub add hooks_riverpod dev:custom_lint dev:riverpod_lint
 flutter pub add openai_api
+flutter pub add logger
 ```
