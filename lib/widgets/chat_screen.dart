@@ -1,4 +1,5 @@
 import 'package:chatgpt_gui/injection.dart';
+import 'package:chatgpt_gui/states/chat_ui_state.dart';
 import 'package:chatgpt_gui/states/message_state.dart';
 import 'package:flutter/material.dart';
 import 'package:chatgpt_gui/models/message.dart';
@@ -27,61 +28,64 @@ class ChatScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(messageProvider);  // 获取数据
+    final messages = ref.watch(messageProvider); // 获取数据
+    final ChatUiState chatUiState = ref.watch(chatUiStateProvider);
     // return Container();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return MessageItem(message: messages[index]);
-                },
-                itemCount: messages.length, // 消息数量
-                separatorBuilder: (context, index) => const Divider(
-                  // 分割线
-                  height: 16,
+        appBar: AppBar(
+          title: const Text('Chat'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    return MessageItem(message: messages[index]);
+                  },
+                  itemCount: messages.length, // 消息数量
+                  separatorBuilder: (context, index) => const Divider(
+                    // 分割线
+                    height: 16,
+                  ),
                 ),
               ),
-            )
-            , TextField(
-              controller: _textController,
-              decoration: InputDecoration(
-                  hintText: 'Type a message', // 显示在输入框内的提示文字
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      // 这里处理发送事件
-                      if (_textController.text.isNotEmpty) {
-                        _sendMessage(ref, _textController.text);
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.send,
-                    ),
-                  )),
-            ),
-          ],
-        ),
-      )
-    );
+              TextField(
+                enabled: !chatUiState.requestLoading,
+                controller: _textController,
+                decoration: InputDecoration(
+                    hintText: 'Type a message', // 显示在输入框内的提示文字
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        // 这里处理发送事件
+                        if (_textController.text.isNotEmpty) {
+                          _sendMessage(ref, _textController.text);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.send,
+                      ),
+                    )),
+              ),
+            ],
+          ),
+        ));
   }
 
   _sendMessage(WidgetRef ref, String content) {
     final message =
         Message(content: content, isUser: true, timestamp: DateTime.now());
     // messages.add(message);
-    ref.read(messageProvider.notifier).addMessage(message);// 添加数据
+    ref.read(messageProvider.notifier).addMessage(message); // 添加数据
     _textController.clear();
     _requestChatGPT(ref, content);
   }
 
   _requestChatGPT(WidgetRef ref, String content) async {
+    ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
     final res = await chatgpt.sendChat(content);
+    ref.read(chatUiStateProvider.notifier).setRequestLoading(false);
     final text = res.choices.first.message?.content ?? "";
     final message =
         Message(content: text, isUser: false, timestamp: DateTime.now());
@@ -106,7 +110,8 @@ class MessageItem extends StatelessWidget {
           // ),
           backgroundColor: message.isUser ? Colors.blue : Colors.grey,
           foregroundColor: Colors.white,
-          child: Text(message.isUser ? 'You':'GPT', style: TextStyle(fontSize: 16)),
+          child: Text(message.isUser ? 'You' : 'GPT',
+              style: TextStyle(fontSize: 16)),
         ),
         const SizedBox(width: 8),
         // Expanded(
@@ -127,7 +132,7 @@ class MessageItem extends StatelessWidget {
         // ),
         Flexible(
           child: Container(
-            margin: const EdgeInsets.only(right: 10),
+            margin: const EdgeInsets.only(right: 5),
             child: Text(message.content),
           ),
         ),
