@@ -39,17 +39,18 @@ class ChatScreen extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return MessageItem(message: messages[index]);
-                  },
-                  itemCount: messages.length, // 消息数量
-                  separatorBuilder: (context, index) => const Divider(
-                    // 分割线
-                    height: 16,
-                  ),
-                ),
+              const Expanded(
+                // child: ListView.separated(
+                //   itemBuilder: (context, index) {
+                //     return MessageItem(message: messages[index]);
+                //   },
+                //   itemCount: messages.length, // 消息数量
+                //   separatorBuilder: (context, index) => const Divider(
+                //     // 分割线
+                //     height: 16,
+                //   ),
+                // ),
+                child: ChatMessageList(),
               ),
               TextField(
                 enabled: !chatUiState.requestLoading,
@@ -105,6 +106,27 @@ class ChatScreen extends HookConsumerWidget {
   }
 }
 
+class ChatMessageList extends HookConsumerWidget {
+  const ChatMessageList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final messages = ref.watch(messageProvider);
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return MessageItem(message: messages[index]);
+      },
+      itemCount: messages.length, // 消息数量
+      separatorBuilder: (context, index) => const Divider(
+        // 分割线
+        height: 16,
+      ),
+    );
+  }
+}
+
 class MessageItem extends StatelessWidget {
   const MessageItem({super.key, required this.message});
 
@@ -144,7 +166,7 @@ class MessageItem extends StatelessWidget {
         // ),
         Flexible(
           child: Container(
-            margin: const EdgeInsets.only(right: 5),
+            margin: const EdgeInsets.only(top: 5, right: 10),
             child: Text(message.content),
           ),
         ),
