@@ -53,57 +53,27 @@ class ChatScreen extends HookConsumerWidget {
                 // ),
                 child: ChatMessageList(),
               ),
-              TextField(
-                enabled: !chatUiState.requestLoading,
-                controller: _textController,
-                decoration: InputDecoration(
-                    hintText: 'Type a message', // 显示在输入框内的提示文字
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        // 这里处理发送事件
-                        if (_textController.text.isNotEmpty) {
-                          _sendMessage(ref, _textController.text);
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.send,
-                      ),
-                    )),
-              ),
+              UserInputWidget(),
+              // TextField(
+              //   enabled: !chatUiState.requestLoading,
+              //   controller: _textController,
+              //   decoration: InputDecoration(
+              //       hintText: 'Type a message', // 显示在输入框内的提示文字
+              //       suffixIcon: IconButton(
+              //         onPressed: () {
+              //           // 这里处理发送事件
+              //           if (_textController.text.isNotEmpty) {
+              //             _sendMessage(ref, _textController);
+              //           }
+              //         },
+              //         icon: const Icon(
+              //           Icons.send,
+              //         ),
+              //       )),
+              // ),
             ],
           ),
         ));
-  }
-
-  _sendMessage(WidgetRef ref, String content) {
-    final id = uuid.v4();
-    final message = Message(
-        id: id, content: content, isUser: true, timestamp: DateTime.now());
-    // messages.add(message);
-    ref.read(messageProvider.notifier).addMessage(message); // 添加数据
-    _textController.clear();
-    _requestChatGPT(ref, content);
-  }
-
-  _requestChatGPT(WidgetRef ref, String content) async {
-    ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
-    try {
-      final id = uuid.v4();
-      //final res = await chatgpt.sendChat(content);
-      await chatgpt.streamChat(content, onSuccess: (text) {
-        final message = Message(
-            id: id, content: text, isUser: false, timestamp: DateTime.now());
-        ref.read(messageProvider.notifier).upsertMessage(message);
-      });
-      //final text = res.choices.first.message?.content ?? "";
-      // final message = Message(
-      //     id: id, content: text, isUser: false, timestamp: DateTime.now());
-      // ref.read(messageProvider.notifier).addMessage(message);
-    } catch (err) {
-      logger.e("request ChatGPT error:", error: err);
-    } finally {
-      ref.read(chatUiStateProvider.notifier).setRequestLoading(false);
-    }
   }
 }
 
@@ -135,6 +105,67 @@ class ChatMessageList extends HookConsumerWidget {
         height: 16,
       ),
     );
+  }
+}
+
+class UserInputWidget extends HookConsumerWidget {
+  const UserInputWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chatUiState = ref.watch(chatUiStateProvider);
+    final _textController = useTextEditingController();
+    return TextField(
+      enabled: !chatUiState.requestLoading,
+      controller: _textController,
+      decoration: InputDecoration(
+          hintText: 'Type a message', // 显示在输入框内的提示文字
+          suffixIcon: IconButton(
+            onPressed: () {
+              // 这里处理发送事件
+              if (_textController.text.isNotEmpty) {
+                _sendMessage(ref, _textController);
+              }
+            },
+            icon: const Icon(
+              Icons.send,
+            ),
+          )),
+    );
+  }
+
+  _sendMessage(WidgetRef ref, TextEditingController controller) async {
+    final content = controller.text;
+    final id = uuid.v4();
+    final message = Message(
+        id: id, content: content, isUser: true, timestamp: DateTime.now());
+    // messages.add(message);
+    ref.read(messageProvider.notifier).upsertMessage(message);
+    controller.clear();
+    _requestChatGPT(ref, content);
+  }
+
+  _requestChatGPT(WidgetRef ref, String content) async {
+    ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
+    try {
+      final id = uuid.v4();
+      //final res = await chatgpt.sendChat(content);
+      await chatgpt.streamChat(content, onSuccess: (text) {
+        final message = Message(
+            id: id, content: text, isUser: false, timestamp: DateTime.now());
+        ref.read(messageProvider.notifier).upsertMessage(message);
+      });
+      //final text = res.choices.first.message?.content ?? "";
+      // final message = Message(
+      //     id: id, content: text, isUser: false, timestamp: DateTime.now());
+      // ref.read(messageProvider.notifier).addMessage(message);
+    } catch (err) {
+      logger.e("request ChatGPT error:", error: err);
+    } finally {
+      ref.read(chatUiStateProvider.notifier).setRequestLoading(false);
+    }
   }
 }
 

@@ -1,5 +1,4 @@
 import 'package:chatgpt_gui/env/env.dart';
-import 'package:flutter/material.dart';
 import 'package:openai_api/openai_api.dart';
 
 class ChatGPTService {
