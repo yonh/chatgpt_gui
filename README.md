@@ -23,6 +23,7 @@ flutter pub add --dev freezed
 flutter pub add json_annotation
 flutter pub add --dev json_serializable
 flutter pub add markdown_widget
+flutter pub add flutter_math_fork markdown
 ```
 
 ## build_runner

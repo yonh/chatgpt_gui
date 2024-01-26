@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:markdown_widget/config/markdown_generator.dart';
+import '../markdown/latex.dart';
 import '../states/message_state.dart';
 import '../services/chatgpt_service.dart';
 
@@ -265,7 +266,14 @@ class MessageContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: MarkdownGenerator().buildWidgets(message.content),
+      children: MarkdownGenerator(
+        generators: [
+          latexGenerator,
+        ],
+        inlineSyntaxes: [
+          LatexSyntax(),
+        ],
+      ).buildWidgets(message.content),
     );
   }
 }
