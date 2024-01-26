@@ -6,6 +6,7 @@ import 'package:chatgpt_gui/models/message.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:markdown_widget/config/markdown_generator.dart';
 import '../states/message_state.dart';
 import '../services/chatgpt_service.dart';
 
@@ -245,11 +246,26 @@ class MessageItem extends StatelessWidget {
           Flexible(
             child: Container(
               margin: const EdgeInsets.only(top: 5, right: 10),
-              child: Text(message.content),
+              // child: Text(message.content),
+              child: MessageContentWidget(message: message),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class MessageContentWidget extends StatelessWidget {
+  const MessageContentWidget({super.key, required this.message});
+
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: MarkdownGenerator().buildWidgets(message.content),
     );
   }
 }

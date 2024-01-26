@@ -22,7 +22,7 @@ flutter pub add freezed_annotation
 flutter pub add --dev freezed
 flutter pub add json_annotation
 flutter pub add --dev json_serializable
-
+flutter pub add markdown_widget
 ```
 
 ## build_runner
