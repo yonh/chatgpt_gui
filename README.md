@@ -34,3 +34,9 @@ flutter pub add floor dev:floor_generator
 `flutter pub run build_runner build --delete-conflicting-outputs` 只会运行一次，如果我们不希望每次修改都重新运行该命令，build_runner 还提供了另外一个选择 watch。使用这个命令，build_runner 会自动监听文件的修改，自动生成代码。
 
 `flutter pub run build_runner watch --delete-conflicting-outputs`
+
+
+问题：
+- [ ] 1. 如何手动更新数据库结构
+- [x] 2. 如何通过migration更新数据库结构
+        通过 databaseBuilder 的 addMigrations 方法添加 Migration

@@ -143,7 +143,11 @@ class UserInputWidget extends HookConsumerWidget {
     final content = controller.text;
     final id = uuid.v4();
     final message = Message(
-        id: id, content: content, isUser: true, timestamp: DateTime.now());
+        id: id,
+        content: content,
+        isUser: true,
+        timestamp: DateTime.now(),
+        sessionId: 1);
     // messages.add(message);
     ref.read(messageProvider.notifier).upsertMessage(message);
     controller.clear();
@@ -157,7 +161,11 @@ class UserInputWidget extends HookConsumerWidget {
       //final res = await chatgpt.sendChat(content);
       await chatgpt.streamChat(content, onSuccess: (text) {
         final message = Message(
-            id: id, content: text, isUser: false, timestamp: DateTime.now());
+            id: id,
+            content: text,
+            isUser: false,
+            timestamp: DateTime.now(),
+            sessionId: 1);
         ref.read(messageProvider.notifier).upsertMessage(message);
       });
       //final text = res.choices.first.message?.content ?? "";

@@ -1,7 +1,9 @@
+import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 // import 'widgets/chat_screen.dart';
 import 'package:chatgpt_gui/widgets/chat_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:openai_api/openai_api.dart';
 
 import 'data/database.dart';
 import 'injection.dart';
@@ -13,7 +15,19 @@ import 'injection.dart';
 // }
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  db = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  db = await $FloorAppDatabase.databaseBuilder('app_database.db').addMigrations(
+    [
+      Migration(1, 2, (database) async {
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Session` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL)');
+        await database
+            .execute('ALTER TABLE Message ADD COLUMN session_id INTEGER');
+        await database
+            .execute("insert into Session (id, title) values (1, 'Default')");
+        await database.execute("update Message set session_id = 1");
+      })
+    ],
+  ).build();
   // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
   runApp(const ProviderScope(child: MyApp()));
 }

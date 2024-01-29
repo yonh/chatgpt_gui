@@ -7,16 +7,22 @@ class Message {
   final String content;
   final bool isUser;
   final DateTime timestamp;
+  @ForeignKey(
+      childColumns: ["session_id"], parentColumns: ["id"], entity: Message)
+  @ColumnInfo(name: "session_id")
+  final int sessionId;
+
   Message({
     required this.id,
     required this.content,
     required this.isUser,
     required this.timestamp,
+    required this.sessionId,
   });
 
   @override
   String toString() {
-    return "Message(id: $id, content: $content, isUser: $isUser, timestamp: $timestamp)";
+    return "Message(id: $id, content: $content, isUser: $isUser, timestamp: $timestamp, sessionId: $sessionId)";
   }
 
   @override
@@ -27,7 +33,11 @@ class Message {
 
   @override
   int get hashCode =>
-      id.hashCode ^ content.hashCode ^ isUser.hashCode ^ timestamp.hashCode;
+      id.hashCode ^
+      content.hashCode ^
+      isUser.hashCode ^
+      timestamp.hashCode ^
+      sessionId.hashCode;
 }
 
 // 在 Dart 中，extension关键字可以用于创建扩展方法（extension methods），这是一种在不修改原始类或创建子类的情况下向现有类添加方法的方式。
@@ -38,12 +48,14 @@ extension MessageExtension on Message {
     String? content,
     bool? isUser,
     DateTime? timestamp,
+    int? sessionId,
   }) {
     return Message(
       id: id ?? this.id,
       content: content ?? this.content,
       isUser: isUser ?? this.isUser,
       timestamp: timestamp ?? this.timestamp,
+      sessionId: sessionId ?? this.sessionId,
     );
   }
 }
