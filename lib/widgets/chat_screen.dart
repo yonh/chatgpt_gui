@@ -33,7 +33,8 @@ class ChatScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(messageProvider); // 获取数据
+    // final messages = ref.watch(messageProvider); // 获取数据
+    final messages = ref.watch(activeSessionMessagesProvider);
     final ChatUiState chatUiState = ref.watch(chatUiStateProvider);
     // return Container();
     return Scaffold(
@@ -96,9 +97,11 @@ class ChatMessageList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(messageProvider);
+    // final messages = ref.watch(messageProvider);
+    final messages = ref.watch(activeSessionMessagesProvider);
     final listController = useScrollController();
-    ref.listen(messageProvider, (previous, next) {
+    // ref.listen(messageProvider, (previous, next) {
+    ref.listen(activeSessionMessagesProvider, (previous, next) {
       Future.delayed(const Duration(milliseconds: 50), () {
         listController.jumpTo(
           listController.position.maxScrollExtent,
