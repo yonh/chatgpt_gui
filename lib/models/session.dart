@@ -3,7 +3,7 @@ import 'package:floor/floor.dart';
 @Entity()
 class Session {
   @primaryKey
-  final String id;
+  final int id;
   final String title;
 
   Session({
@@ -24,4 +24,11 @@ class Session {
 
   @override
   int get hashCode => id.hashCode ^ title.hashCode;
+
+  Session copyWith({int? id, String? title}) {
+    return Session(
+      id: id ?? this.id,
+      title: title ?? this.title,
+    );
+  }
 }

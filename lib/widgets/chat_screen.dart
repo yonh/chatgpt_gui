@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:chatgpt_gui/models/message.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:markdown_widget/config/markdown_generator.dart';
 import '../markdown/latex.dart';
@@ -38,6 +39,14 @@ class ChatScreen extends HookConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Chat'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                GoRouter.of(context).push('/history');
+              },
+              icon: const Icon(Icons.history),
+            )
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

@@ -26,6 +26,9 @@ flutter pub add --dev json_serializable
 flutter pub add markdown_widget
 flutter pub add flutter_math_fork markdown
 flutter pub add floor dev:floor_generator
+flutter pub add dev:custom_lint dev:riverpod_lint riverpod_annotation  dev:riverpod_generator
+flutter pub add go_router
+
 ```
 
 ## build_runner

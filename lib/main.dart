@@ -1,7 +1,8 @@
+import 'package:chatgpt_gui/router.dart';
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 // import 'widgets/chat_screen.dart';
-import 'package:chatgpt_gui/widgets/chat_screen.dart';
+// import 'package:chatgpt_gui/widgets/chat_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:openai_api/openai_api.dart';
 
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'ChatGPT GUI',
       theme: ThemeData(
         // This is the theme of your application.
@@ -53,7 +55,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: ChatScreen(),
+      // home: ChatScreen(),
+      routerConfig: router,
     );
   }
 }
