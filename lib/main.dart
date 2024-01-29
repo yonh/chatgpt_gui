@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:chatgpt_gui/widgets/chat_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'data/database.dart';
+import 'injection.dart';
+
 // void main() {
 //   // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
 //   ProviderScope(child: MyApp());
 //   // runApp(const MyApp());
 // }
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  db = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
   // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
   runApp(const ProviderScope(child: MyApp()));
 }

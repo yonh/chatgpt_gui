@@ -10,6 +10,7 @@ flutter run -d macos
 flutter clean
 flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
+flutter pub run build_runner watch --delete-conflicting-outputs
 ```
 
 ## components
@@ -24,6 +25,7 @@ flutter pub add json_annotation
 flutter pub add --dev json_serializable
 flutter pub add markdown_widget
 flutter pub add flutter_math_fork markdown
+flutter pub add floor dev:floor_generator
 ```
 
 ## build_runner
