@@ -40,6 +40,15 @@ class SessionStateNotifier extends _$SessionStateNotifier {
   }
 
   Future<void> deleteSession(Session session) async {
+    // 如果删除的是当前激活的会话，则将激活的会话设置为null
+    if (state.valueOrNull?.activeSession?.id == session.id) {
+      state = const AsyncValue.loading();
+      state = await AsyncValue.guard(() async {
+        return SessionState(
+            sessionList: await _fetchData(), activeSession: null);
+      });
+    }
+
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await db.sessionDao.deleteSession(session);

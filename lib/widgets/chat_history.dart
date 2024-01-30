@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../models/session.dart';
 import '../states/session_state.dart';
 
 class ChatHistory extends HookConsumerWidget {
@@ -24,11 +25,15 @@ class ChatHistory extends HookConsumerWidget {
                           child: Text(i.title),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // editMode.value = true;
+                          },
                           icon: const Icon(Icons.edit),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _deleteConfirm(context, ref, i);
+                          },
                           icon: const Icon(Icons.delete),
                         ),
                       ],
@@ -57,4 +62,33 @@ class ChatHistory extends HookConsumerWidget {
       ),
     );
   }
+}
+
+Future _deleteConfirm(
+    BuildContext context, WidgetRef ref, Session session) async {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete"),
+          content: const Text("Are you sure to delete?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                ref
+                    .read(sessionStateNotifierProvider.notifier)
+                    .deleteSession(session);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      });
 }
