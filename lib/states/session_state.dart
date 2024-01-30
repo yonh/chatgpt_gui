@@ -58,3 +58,9 @@ class SessionStateNotifier extends _$SessionStateNotifier {
     });
   }
 }
+
+@riverpod
+Session? activeSession(ActiveSessionRef ref) {
+  final state = ref.watch(sessionStateNotifierProvider).valueOrNull;
+  return state?.activeSession;
+}

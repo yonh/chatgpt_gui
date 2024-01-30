@@ -9,8 +9,10 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:markdown_widget/config/markdown_generator.dart';
 import '../markdown/latex.dart';
+import '../models/session.dart';
 import '../states/message_state.dart';
 import '../services/chatgpt_service.dart';
+import '../states/session_state.dart';
 
 // 我们在创建界面时，为了快速实现页面效果，选择使用了简单的StatelessWidget组件。
 // 而StatelessWidget 是不可变的，这意味着它们的属性在对象创建时就被固定了，并且在整个生命周期内保持不变。
@@ -46,6 +48,14 @@ class ChatScreen extends HookConsumerWidget {
                 GoRouter.of(context).push('/history');
               },
               icon: const Icon(Icons.history),
+            ),
+            IconButton(
+              onPressed: () {
+                ref
+                    .read(sessionStateNotifierProvider.notifier)
+                    .setActiveSession(null);
+              },
+              icon: const Icon(Icons.add),
             )
           ],
         ),
@@ -151,33 +161,74 @@ class UserInputWidget extends HookConsumerWidget {
     );
   }
 
-  _sendMessage(WidgetRef ref, TextEditingController controller) async {
-    final content = controller.text;
-    final id = uuid.v4();
+  Message _createMessage(
+    String content, {
+    String? id,
+    bool isUser = true,
+    int? sessionId,
+  }) {
     final message = Message(
-        id: id,
-        content: content,
-        isUser: true,
-        timestamp: DateTime.now(),
-        sessionId: 1);
-    // messages.add(message);
-    ref.read(messageProvider.notifier).upsertMessage(message);
-    controller.clear();
-    _requestChatGPT(ref, content);
+      id: id ?? uuid.v4(),
+      content: content,
+      isUser: isUser,
+      timestamp: DateTime.now(),
+      sessionId: sessionId ?? 0,
+    );
+    return message;
   }
 
-  _requestChatGPT(WidgetRef ref, String content) async {
+  _sendMessage(WidgetRef ref, TextEditingController controller) async {
+    final content = controller.text;
+    Message message = _createMessage(content);
+    var active = ref.watch(activeSessionProvider);
+    var sessionId = active?.id ?? 0;
+    if (sessionId <= 0) {
+      active = Session(title: content);
+      // final id = await db.sessionDao.upsertSession(active);
+      active = await ref
+          .read(sessionStateNotifierProvider.notifier)
+          .upsertSession(active);
+      sessionId = active.id!;
+      ref
+          .read(sessionStateNotifierProvider.notifier)
+          .setActiveSession(active.copyWith(id: sessionId));
+    }
+
+    ref.read(messageProvider.notifier).upsertMessage(
+          message.copyWith(sessionId: sessionId),
+        ); // 添加消息
+    controller.clear();
+    _requestChatGPT(ref, content, sessionId: sessionId);
+
+    // final content = controller.text;
+    // final id = uuid.v4();
+    // final message = Message(
+    //     id: id,
+    //     content: content,
+    //     isUser: true,
+    //     timestamp: DateTime.now(),
+    //     sessionId: 1);
+    // // messages.add(message);
+    // ref.read(messageProvider.notifier).upsertMessage(message);
+    // controller.clear();
+    // _requestChatGPT(ref, content);
+  }
+
+  _requestChatGPT(WidgetRef ref, String content, {int? sessionId}) async {
     ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
     try {
       final id = uuid.v4();
       //final res = await chatgpt.sendChat(content);
       await chatgpt.streamChat(content, onSuccess: (text) {
-        final message = Message(
-            id: id,
-            content: text,
-            isUser: false,
-            timestamp: DateTime.now(),
-            sessionId: 1);
+        // final message = Message(
+        //     id: id,
+        //     content: text,
+        //     isUser: false,
+        //     timestamp: DateTime.now(),
+        //     sessionId: 1);
+        final message =
+            _createMessage(text, id: id, isUser: false, sessionId: sessionId);
+
         ref.read(messageProvider.notifier).upsertMessage(message);
       });
       //final text = res.choices.first.message?.content ?? "";

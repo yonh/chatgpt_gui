@@ -41,6 +41,15 @@ class ChatHistory extends HookConsumerWidget {
                     },
                     selected: state.activeSession?.id == i.id,
                   ),
+                IconButton(
+                  onPressed: () {
+                    GoRouter.of(context).pop();
+                    ref
+                        .read(sessionStateNotifierProvider.notifier)
+                        .setActiveSession(null);
+                  },
+                  icon: const Icon(Icons.add),
+                )
               ]);
             },
             error: (err, stack) => Text("$err"),

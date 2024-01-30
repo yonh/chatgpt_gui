@@ -3,11 +3,11 @@ import 'package:floor/floor.dart';
 @Entity()
 class Session {
   @primaryKey
-  final int id;
+  final int? id;
   final String title;
 
   Session({
-    required this.id,
+    this.id,
     required this.title,
   });
 
