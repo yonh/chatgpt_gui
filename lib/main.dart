@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // import 'widgets/chat_screen.dart';
 // import 'package:chatgpt_gui/widgets/chat_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:openai_api/openai_api.dart';
 
 import 'data/database.dart';
 import 'injection.dart';

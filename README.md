@@ -43,3 +43,16 @@ flutter pub add go_router
 - [ ] 1. 如何手动更新数据库结构
 - [x] 2. 如何通过migration更新数据库结构
         通过 databaseBuilder 的 addMigrations 方法添加 Migration
+- [x] 3. 报错 Envied can only handle types
+```
+         Envied can only handle types such as `int`, `double`, `num`, `bool` and `String`. Type `InvalidType` is not one of them.
+         package:chatgpt_gui/env/env.dart:8:16
+         ╷
+         8 │   static const apiKey = _Env.apiKey;
+         │                ^^^^^^
+         ╵
+  > 解决: 添加类型 const String apiKey
+  > flutter clean
+  > flutter pub run build_runner build --delete-conflicting-outputs
+```
+

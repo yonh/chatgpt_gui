@@ -1,17 +1,16 @@
 import 'package:chatgpt_gui/injection.dart';
+import 'package:chatgpt_gui/models/message.dart';
 import 'package:chatgpt_gui/states/chat_ui_state.dart';
 import 'package:chatgpt_gui/states/message_state.dart';
 import 'package:flutter/material.dart';
-import 'package:chatgpt_gui/models/message.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:markdown_widget/config/markdown_generator.dart';
+
 import '../markdown/latex.dart';
 import '../models/session.dart';
-import '../states/message_state.dart';
-import '../services/chatgpt_service.dart';
 import '../states/session_state.dart';
 
 // 我们在创建界面时，为了快速实现页面效果，选择使用了简单的StatelessWidget组件。
@@ -341,7 +340,7 @@ class MessageContentWidget extends StatelessWidget {
         generators: [
           latexGenerator,
         ],
-        inlineSyntaxes: [
+        inlineSyntaxList: [
           LatexSyntax(),
         ],
       ).buildWidgets(message.content),
