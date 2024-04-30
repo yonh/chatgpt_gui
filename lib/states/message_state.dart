@@ -28,7 +28,7 @@ class MessageList extends StateNotifier<List<Message>> {
       final msg = state[index];
       m = message.copyWith(content: msg.content + message.content);
     }
-    logger.d("message id ${m.id}");
+    //logger.d("message id ${m.id}");
 
     // update db
     db.messageDao.upsertMessage(m); // 消息插入数据库中
