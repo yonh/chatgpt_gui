@@ -92,10 +92,11 @@ class UserInputWidget extends HookConsumerWidget {
 
   _requestChatGPT(WidgetRef ref, String content, {int? sessionId}) async {
     ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
+    final messages = ref.watch(messageProvider);
     try {
       final id = uuid.v4();
       //final res = await chatgpt.sendChat(content);
-      await chatgpt.streamChat(content, onSuccess: (text) {
+      await chatgpt.streamChat(messages, onSuccess: (text) {
         // final message = Message(
         //     id: id,
         //     content: text,

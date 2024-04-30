@@ -1,6 +1,8 @@
 import 'package:chatgpt_gui/env/env.dart';
 import 'package:openai_api/openai_api.dart';
 
+import '../models/message.dart';
+
 class ChatGPTService {
   final client = OpenaiClient(
     config: OpenaiConfig(
@@ -26,18 +28,20 @@ class ChatGPTService {
   }
 
   Future streamChat(
-    String content, {
+    List<Message> messages, {
     Function(String text)? onSuccess,
   }) async {
     final request = ChatCompletionRequest(
         model: Models.gpt3_5Turbo,
         stream: true,
-        messages: [
-          ChatMessage(
-            content: content,
-            role: ChatMessageRole.user,
-          )
-        ]);
+        messages: messages
+            .map((e) => ChatMessage(
+                  content: e.content,
+                  role: e.isUser
+                      ? ChatMessageRole.user
+                      : ChatMessageRole.assistant,
+                ))
+            .toList());
     return await client.sendChatCompletionStream(request, onSuccess: (p) {
       final text = p.choices.first.delta?.content;
       if (text != null) {
