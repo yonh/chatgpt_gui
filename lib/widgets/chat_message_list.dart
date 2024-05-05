@@ -38,18 +38,25 @@ class ChatMessageList extends HookConsumerWidget {
       },
       itemCount: messages.length, // 消息数量
       separatorBuilder: (context, index) => const Divider(
-        // 分割线
-        height: 16,
-      ),
+          // 分割线
+          height: 16,
+          color: Colors.transparent),
     );
   }
 }
 
 class ReceivedMessageItem extends StatelessWidget {
-  const ReceivedMessageItem({super.key, required this.message});
+  final Color backgroundColor;
+  final double radius;
+
+  const ReceivedMessageItem({
+    super.key,
+    required this.message,
+    this.backgroundColor = Colors.lightBlue,
+    this.radius = 6,
+  });
 
   final Message message;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -89,8 +96,26 @@ class ReceivedMessageItem extends StatelessWidget {
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+
+              margin: const EdgeInsets.only(top: 5, right: 10),
+              // child: Text(message.content),
+              child: MessageContentWidget(message: message),
+            ),
+          ),
+          CustomPaint(
+            painter:
+                Triangle(backgroundColor, translateX: -10.0, translateY: 5.0),
+          ),
+          const SizedBox(width: 8),
           CircleAvatar(
               // backgroundImage: NetworkImage(
               //   'https://picsum.photos/40/40',
@@ -107,30 +132,6 @@ class ReceivedMessageItem extends StatelessWidget {
                   height: 40,
                 ),
               )),
-          const SizedBox(width: 8),
-          // Expanded(
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       Text(
-          //         message.isUser ? 'You' : 'GPT',
-          //         style: Theme.of(context).textTheme.labelLarge,
-          //       ),
-          //       Text(
-          //         // 'This is a message',
-          //         message.content,
-          //         style: Theme.of(context).textTheme.bodyMedium,
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          Flexible(
-            child: Container(
-              margin: const EdgeInsets.only(top: 5, right: 10),
-              // child: Text(message.content),
-              child: MessageContentWidget(message: message),
-            ),
-          ),
         ],
       ),
     );
@@ -138,7 +139,14 @@ class ReceivedMessageItem extends StatelessWidget {
 }
 
 class SentMessageItem extends StatelessWidget {
-  const SentMessageItem({super.key, required this.message});
+  final Color backgroundColor;
+  final double radius;
+
+  const SentMessageItem(
+      {super.key,
+      required this.message,
+      this.backgroundColor = Colors.green,
+      this.radius = 6});
 
   final Message message;
 
@@ -191,7 +199,12 @@ class SentMessageItem extends StatelessWidget {
             foregroundColor: Colors.white,
             child: Text('Me', style: TextStyle(fontSize: 16)),
           ),
+
           const SizedBox(width: 8),
+          CustomPaint(
+            painter:
+                Triangle(backgroundColor, translateX: 0.0, translateY: 5.0),
+          ),
           // Expanded(
           //   child: Column(
           //     crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,6 +223,11 @@ class SentMessageItem extends StatelessWidget {
           // ),
           Flexible(
             child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               margin: const EdgeInsets.only(top: 5, right: 10),
               // child: Text(message.content),
               child: MessageContentWidget(message: message),
@@ -239,5 +257,36 @@ class MessageContentWidget extends StatelessWidget {
         ],
       ).buildWidgets(message.content),
     );
+  }
+}
+
+class Triangle extends CustomPainter {
+  final Color bgColor;
+  final translateX;
+  final translateY;
+
+  Triangle(this.bgColor, {this.translateX = 0.0, this.translateY = 0.0});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()..color = bgColor;
+
+    var path = Path();
+    // path.lineTo(0, 0);
+    // path.lineTo(5, 10);
+    // path.lineTo(10, 0);
+
+    path.lineTo(-5, 0);
+    path.lineTo(0, 10);
+    path.lineTo(5, 0);
+
+    canvas.translate(this.translateX, this.translateY); // 我们向左移动，只需要调整横坐标即可。
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }
