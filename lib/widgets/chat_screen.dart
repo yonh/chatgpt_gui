@@ -79,7 +79,8 @@ class ChatScreen extends HookConsumerWidget {
                 // ),
                 child: ChatMessageList(),
               ),
-              const UserInputWidget(),
+              // const UserInputWidget(),
+              const ChatInputWidget(),
               // TextField(
               //   enabled: !chatUiState.requestLoading,
               //   controller: _textController,
