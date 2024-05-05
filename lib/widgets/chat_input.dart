@@ -19,21 +19,33 @@ class UserInputWidget extends HookConsumerWidget {
     final chatUiState = ref.watch(chatUiStateProvider);
     final _textController = useTextEditingController();
     return TextField(
-      enabled: !chatUiState.requestLoading,
+      // enabled: !chatUiState.requestLoading,
       controller: _textController,
       decoration: InputDecoration(
+          // contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          // border: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(8.0),
+          // ),
           hintText: 'Type a message', // 显示在输入框内的提示文字
-          suffixIcon: IconButton(
-            onPressed: () {
-              // 这里处理发送事件
-              if (_textController.text.isNotEmpty) {
-                _sendMessage(ref, _textController);
-              }
-            },
-            icon: const Icon(
-              Icons.send,
-            ),
-          )),
+          suffixIcon: SizedBox(
+              width: 40,
+              child: chatUiState.requestLoading
+                  ? const Center(
+                      child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ))
+                  : IconButton(
+                      onPressed: () {
+                        // 这里处理发送事件
+                        if (_textController.text.isNotEmpty) {
+                          _sendMessage(ref, _textController);
+                        }
+                      },
+                      icon: const Icon(Icons.send)))),
     );
   }
 }
@@ -161,21 +173,11 @@ _requestChatGPT(WidgetRef ref, String content, {int? sessionId}) async {
     //final res = await chatgpt.sendChat(content);
     await chatgpt.streamChat(messages,
         model: activeSession?.model ?? uiState.model, onSuccess: (text) {
-      // final message = Message(
-      //     id: id,
-      //     content: text,
-      //     isUser: false,
-      //     timestamp: DateTime.now(),
-      //     sessionId: 1);
       final message =
           _createMessage(text, id: id, isUser: false, sessionId: sessionId);
 
       ref.read(messageProvider.notifier).upsertMessage(message);
     });
-    //final text = res.choices.first.message?.content ?? "";
-    // final message = Message(
-    //     id: id, content: text, isUser: false, timestamp: DateTime.now());
-    // ref.read(messageProvider.notifier).addMessage(message);
   } catch (err) {
     logger.e("request ChatGPT error:", error: err);
   } finally {
