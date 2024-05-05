@@ -1,5 +1,6 @@
 import 'package:chatgpt_gui/states/chat_ui_state.dart';
 import 'package:chatgpt_gui/states/message_state.dart';
+import 'package:chatgpt_gui/widgets/chat_gpt_model_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,6 +31,7 @@ class ChatScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final messages = ref.watch(messageProvider); // 获取数据
+    final activeSession = ref.watch(activeSessionProvider);
     final messages = ref.watch(activeSessionMessagesProvider);
     final ChatUiState chatUiState = ref.watch(chatUiStateProvider);
     // return Container();
@@ -48,6 +50,7 @@ class ChatScreen extends HookConsumerWidget {
                 ref
                     .read(sessionStateNotifierProvider.notifier)
                     .setActiveSession(null);
+                ref.read(chatUiStateProvider.notifier).state = ChatUiState();
               },
               icon: const Icon(Icons.add),
             )
@@ -57,6 +60,12 @@ class ChatScreen extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              GptModelWidget(
+                  active: chatUiState.model,
+                  isModelConfirmed: chatUiState.isModelConfirmed,
+                  onModelChanged: (model) {
+                    ref.read(chatUiStateProvider.notifier).model = model;
+                  }),
               const Expanded(
                 // child: ListView.separated(
                 //   itemBuilder: (context, index) {
@@ -70,7 +79,7 @@ class ChatScreen extends HookConsumerWidget {
                 // ),
                 child: ChatMessageList(),
               ),
-              UserInputWidget(),
+              const UserInputWidget(),
               // TextField(
               //   enabled: !chatUiState.requestLoading,
               //   controller: _textController,

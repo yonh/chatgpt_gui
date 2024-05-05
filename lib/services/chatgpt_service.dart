@@ -30,6 +30,7 @@ class ChatGPTService {
 
   Future streamChat(
     List<Message> messages, {
+    String? model,
     Function(String text)? onSuccess,
   }) async {
     int tokenCount =
@@ -38,7 +39,7 @@ class ChatGPTService {
     print('Token count: $tokenCount');
 
     final request = ChatCompletionRequest(
-        model: Models.gpt3_5Turbo,
+        model: model ?? Models.gpt3_5Turbo,
         stream: true,
         messages: messages
             .map((e) => ChatMessage(

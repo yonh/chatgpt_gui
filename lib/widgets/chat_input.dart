@@ -55,11 +55,14 @@ class UserInputWidget extends HookConsumerWidget {
 
   _sendMessage(WidgetRef ref, TextEditingController controller) async {
     final content = controller.text;
+    final uiState = ref.watch(chatUiStateProvider);
     Message message = _createMessage(content);
     var active = ref.watch(activeSessionProvider);
     var sessionId = active?.id ?? 0;
+    ref.read(chatUiStateProvider.notifier).confirmModel(); // 确认模型
+
     if (sessionId <= 0) {
-      active = Session(title: content);
+      active = Session(title: content, model: uiState.model);
       // final id = await db.sessionDao.upsertSession(active);
       active = await ref
           .read(sessionStateNotifierProvider.notifier)
@@ -91,12 +94,15 @@ class UserInputWidget extends HookConsumerWidget {
   }
 
   _requestChatGPT(WidgetRef ref, String content, {int? sessionId}) async {
+    final uiState = ref.watch(chatUiStateProvider);
     ref.read(chatUiStateProvider.notifier).setRequestLoading(true);
     final messages = ref.watch(activeSessionMessagesProvider);
+    final activeSession = ref.watch(activeSessionProvider);
     try {
       final id = uuid.v4();
       //final res = await chatgpt.sendChat(content);
-      await chatgpt.streamChat(messages, onSuccess: (text) {
+      await chatgpt.streamChat(messages,
+          model: activeSession?.model ?? uiState.model, onSuccess: (text) {
         // final message = Message(
         //     id: id,
         //     content: text,

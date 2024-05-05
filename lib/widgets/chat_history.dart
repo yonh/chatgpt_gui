@@ -1,3 +1,4 @@
+import 'package:chatgpt_gui/states/chat_ui_state.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,7 +23,7 @@ class ChatHistory extends HookConsumerWidget {
                     title: Row(
                       children: [
                         Expanded(
-                          child: Text(i.title),
+                          child: Text("【" + i.model + "】 " + i.title),
                         ),
                         IconButton(
                           onPressed: () {
@@ -43,6 +44,13 @@ class ChatHistory extends HookConsumerWidget {
                       ref
                           .read(sessionStateNotifierProvider.notifier)
                           .setActiveSession(i);
+
+                      ref.read(chatUiStateProvider.notifier).state =
+                          ChatUiState(
+                        requestLoading: false,
+                        model: i.model,
+                        isModelConfirmed: true,
+                      );
                     },
                     selected: state.activeSession?.id == i.id,
                   ),

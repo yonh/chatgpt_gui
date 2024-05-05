@@ -5,15 +5,17 @@ class Session {
   @primaryKey
   final int? id;
   final String title;
+  final String model;
 
   Session({
     this.id,
     required this.title,
+    required this.model,
   });
 
   @override
   String toString() {
-    return "Session(id: $id, title: $title)";
+    return "Session(id: $id, title: $title, model: $model)";
   }
 
   @override
@@ -29,6 +31,7 @@ class Session {
     return Session(
       id: id ?? this.id,
       title: title ?? this.title,
+      model: model ?? this.model,
     );
   }
 }
