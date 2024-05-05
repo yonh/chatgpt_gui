@@ -23,7 +23,11 @@ class GptModelWidget extends HookWidget {
         const Text('Model: '),
         !isModelConfirmed
             ? DropdownButton<String>(
-                items: [Models.gpt3_5Turbo, Models.gpt4].map((e) {
+                items: [
+                  Models.gpt3_5Turbo,
+                  Models.gpt4,
+                  Models.gpt3_5Turbo_1106
+                ].map((e) {
                   return DropdownMenuItem(
                     value: e,
                     child: Text(e),

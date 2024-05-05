@@ -28,6 +28,7 @@ flutter pub add flutter_math_fork markdown
 flutter pub add floor dev:floor_generator
 flutter pub add dev:custom_lint dev:riverpod_lint riverpod_annotation  dev:riverpod_generator
 flutter pub add go_router
+flutter pub add record path_provider
 
 ```
 
@@ -55,4 +56,27 @@ flutter pub add go_router
   > flutter clean
   > flutter pub run build_runner build --delete-conflicting-outputs
 ```
+- [x] 4. path_provider 需要 10.15 以上系统版本，所以需要更新下配置文件 macos/Runner/Configs/AppInfo.xcconfig
+    `MACOSX_DEPLOYMENT_TARGET = 10.15`
+- [x] 5. 录音权限
+```
+# 编辑文件
+# macos/Runner/DebugProfile.entitlements
+<key>com.apple.security.device.audio-input</key>
+<true />
+
+# macos/Runner/Release.entitlements
+<key>com.apple.security.device.audio-input</key>
+<true />
+
+# 安卓：需要修改android/app/build.gradle的 minSdkVersion >= 19
+
+# ios：
+# ios/Runner/Info.plist
+<key>NSMicrophoneUsageDescription</key>
+<string>We need to access to the microphone to record audio file</string>
+```
+- [x] 6. windows 上录音提示找不到文件 [代码目录]\build\windows\x64\runner\Debug\fmedia\fmedia.exe
+    可以将`C:\Users\用户名\AppData\Local\Pub\Cache\hosted\pub.dev\record_windows-0.7.1\windows\fmedia` 复制到 `[代码目录]\build\windows\x64\runner\Debug\fmedia`
+    或者执行 flutter build windows 到 `build\windows\x64\runner\Release\` 目录下复制
 

@@ -50,6 +50,8 @@ dependencies:
   riverpod_annotation: ^2.1.2
   go_router: ^14.0.1
   flutter_tiktoken: ^0.0.1
+  record: ^4.4.4
+  path_provider: ^2.1.3
 
 dev_dependencies:
   flutter_test:

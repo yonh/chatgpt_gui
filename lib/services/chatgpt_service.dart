@@ -2,6 +2,7 @@ import 'package:chatgpt_gui/env/env.dart';
 import 'package:flutter_tiktoken/flutter_tiktoken.dart';
 import 'package:openai_api/openai_api.dart';
 
+import '../injection.dart';
 import '../models/message.dart';
 
 class ChatGPTService {
@@ -58,6 +59,14 @@ class ChatGPTService {
     });
   }
 
+  Future<String> speechToText(String path) async {
+    final res =
+        await client.createTranscription(TranscriptionRequest(file: path));
+    logger.t(res);
+
+    return res.text;
+  }
+
   int calculateTokenCount(List<ChatMessage> messages, String model) {
     final encoding = encodingForModel(model);
     var count = 0;
@@ -72,6 +81,7 @@ class ChatGPTService {
 // 最大 token 限制
 final maxTokens = {
   Models.gpt3_5Turbo: 4096,
+  Models.gpt3_5Turbo_1106: 4096,
   Models.gpt4: 8192,
 };
 
