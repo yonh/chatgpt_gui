@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -18,35 +19,43 @@ class UserInputWidget extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chatUiState = ref.watch(chatUiStateProvider);
     final _textController = useTextEditingController();
-    return TextField(
-      // enabled: !chatUiState.requestLoading,
-      controller: _textController,
-      decoration: InputDecoration(
-          // contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          // border: OutlineInputBorder(
-          //   borderRadius: BorderRadius.circular(8.0),
-          // ),
-          hintText: 'Type a message', // 显示在输入框内的提示文字
-          suffixIcon: SizedBox(
-              width: 40,
-              child: chatUiState.requestLoading
-                  ? const Center(
-                      child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    ))
-                  : IconButton(
-                      onPressed: () {
-                        // 这里处理发送事件
-                        if (_textController.text.isNotEmpty) {
-                          _sendMessage(ref, _textController);
-                        }
-                      },
-                      icon: const Icon(Icons.send)))),
-    );
+
+    return KeyboardListener(
+        onKeyEvent: (event) {
+          if (event.logicalKey == LogicalKeyboardKey.enter) {
+            _sendMessage(ref, _textController);
+          }
+        },
+        focusNode: FocusNode(),
+        child: TextField(
+          // enabled: !chatUiState.requestLoading,
+          controller: _textController,
+          decoration: InputDecoration(
+              // contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              // border: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(8.0),
+              // ),
+              hintText: 'Type a message', // 显示在输入框内的提示文字
+              suffixIcon: SizedBox(
+                  width: 40,
+                  child: chatUiState.requestLoading
+                      ? const Center(
+                          child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ))
+                      : IconButton(
+                          onPressed: () {
+                            // 这里处理发送事件
+                            if (_textController.text.isNotEmpty) {
+                              _sendMessage(ref, _textController);
+                            }
+                          },
+                          icon: const Icon(Icons.send)))),
+        ));
   }
 }
 
