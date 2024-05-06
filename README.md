@@ -58,6 +58,11 @@ flutter pub add record path_provider
 ```
 - [x] 4. path_provider 需要 10.15 以上系统版本，所以需要更新下配置文件 macos/Runner/Configs/AppInfo.xcconfig
     `MACOSX_DEPLOYMENT_TARGET = 10.15`
+可能提示：Error: The plugin "record_macos" requires a higher minimum macOS deployment version than your application is targeting.
+         To build, increase your application's deployment target to at least 10.15 as described at https://docs.flutter.dev/deployment/macos
+         Error: Error running pod install
+需要调整 `macos/Podfile` 将 `platform :osx, '10.14'` 修改为 `platform :osx, '10.15'`
+
 - [x] 5. 录音权限
 ```
 # 编辑文件
