@@ -6,6 +6,7 @@ A simple ChatGPT GUI Project.
 - [ ] bug? 可能存在有时因为删除会话，切换会话等原因，新建会话时使用的是之前的会话数据
 - [ ] 输入框支持多行输入
 - [ ] 支持图片发送
+- [ ] bug 请求中切换语音输入会导致请求结果不显示
 
 ## Getting Started
 copy .env.example to .env and fill in the values
@@ -34,7 +35,7 @@ flutter pub add floor dev:floor_generator
 flutter pub add dev:custom_lint dev:riverpod_lint riverpod_annotation  dev:riverpod_generator
 flutter pub add go_router
 flutter pub add record path_provider
-
+flutter pub add flutter_launcher_icons 
 ```
 
 ## build_runner
@@ -44,6 +45,12 @@ flutter pub add record path_provider
 
 `flutter pub run build_runner watch --delete-conflicting-outputs`
 
+# change icon
+生成配置文件后，修改 flutter_launcher_icons.yaml 文件更改icon路径
+```
+flutter pub run flutter_launcher_icons:generate
+flutter pub run flutter_launcher_icons
+```
 
 问题：
 - [ ] 1. 如何手动更新数据库结构
