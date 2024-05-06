@@ -6,6 +6,8 @@ import '../injection.dart';
 import '../models/message.dart';
 
 class ChatGPTService {
+  CancellationToken _cancellationToken = CancellationToken();
+
   final client = OpenaiClient(
     config: OpenaiConfig(
       // apiKey: "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", // 你的key
@@ -34,6 +36,7 @@ class ChatGPTService {
     String? model,
     Function(String text)? onSuccess,
   }) async {
+    _cancellationToken = CancellationToken();
     int tokenCount =
         calculateTokenCount(messages.toChatMessages(), Models.gpt3_5Turbo);
 
@@ -51,12 +54,17 @@ class ChatGPTService {
                 ))
             .toList()
             .limitMessages());
-    return await client.sendChatCompletionStream(request, onSuccess: (p) {
+    return await client.sendChatCompletionStream(request,
+        cancellationToken: _cancellationToken, onSuccess: (p) {
       final text = p.choices.first.delta?.content;
       if (text != null) {
         onSuccess?.call(text);
       }
     });
+  }
+
+  void cancelStreamChat() {
+    _cancellationToken.cancel();
   }
 
   Future<String> speechToText(String path) async {

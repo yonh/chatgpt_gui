@@ -11,9 +11,51 @@ import '../states/message_state.dart';
 import '../states/session_state.dart';
 
 class UserInputWidget extends HookConsumerWidget {
-  const UserInputWidget({
+  UserInputWidget({
     super.key,
   });
+
+  final ValueNotifier<bool> _isHovered = ValueNotifier<bool>(false);
+
+  Widget requestingHover(BuildContext context, WidgetRef ref) {
+    return MouseRegion(
+      onEnter: (event) => _isHovered.value = true,
+      onExit: (event) => _isHovered.value = false,
+      cursor: SystemMouseCursors.click,
+      child: ValueListenableBuilder<bool>(
+          valueListenable: _isHovered,
+          builder: (context, isHovered, child) {
+            if (isHovered) {
+              return IconButton(
+                  onPressed: () {
+                    // 这里处理取消请求的逻辑
+                    _stopRequest(ref);
+                    print("cancel request");
+                  },
+                  icon: const Icon(Icons.stop));
+            } else {
+              return const CircularProgressIndicator(strokeWidth: 2);
+            }
+          }),
+    );
+
+    // child: GestureDetector(
+    //   onTap: () {
+    //     // 这里处理取消请求的逻辑
+    //     //_cancelRequest(ref);
+    //     print("cancel");
+    //   },
+    //   child: const Center(
+    //     child: SizedBox(
+    //       width: 24,
+    //       height: 24,
+    //       child: CircularProgressIndicator(
+    //         strokeWidth: 2,
+    //       ),
+    //     ),
+    //   ),
+    // ),
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +70,37 @@ class UserInputWidget extends HookConsumerWidget {
         },
         focusNode: FocusNode(),
         child: TextField(
-          // enabled: !chatUiState.requestLoading,
+          controller: _textController,
+          decoration: InputDecoration(
+              hintText: 'Type a message', // 显示在输入框内的提示文字
+              suffixIcon: SizedBox(
+                  width: 40,
+                  child: chatUiState.requestLoading
+                      ? requestingHover(context, ref)
+                      : IconButton(
+                          onPressed: () {
+                            // 这里处理发送事件
+                            if (_textController.text.isNotEmpty) {
+                              _sendMessage(ref, _textController);
+                            }
+                          },
+                          icon: const Icon(Icons.send)))),
+        ));
+  }
+
+  Widget build2(BuildContext context, WidgetRef ref) {
+    final chatUiState = ref.watch(chatUiStateProvider);
+    final _textController = useTextEditingController();
+
+    return KeyboardListener(
+        onKeyEvent: (event) {
+          if (event.logicalKey == LogicalKeyboardKey.enter) {
+            _sendMessage(ref, _textController);
+          }
+        },
+        focusNode: FocusNode(),
+        child: TextField(
+          enabled: !_textController.text.isEmpty,
           controller: _textController,
           decoration: InputDecoration(
               // contentPadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -50,9 +122,7 @@ class UserInputWidget extends HookConsumerWidget {
                       : IconButton(
                           onPressed: () {
                             // 这里处理发送事件
-                            if (_textController.text.isNotEmpty) {
-                              _sendMessage(ref, _textController);
-                            }
+                            _sendMessage(ref, _textController);
                           },
                           icon: const Icon(Icons.send)))),
         ));
@@ -75,9 +145,8 @@ class ChatInputWidget extends HookConsumerWidget {
             icon: Icon(voiceMode.value ? Icons.keyboard : Icons.keyboard_voice),
           ),
           Expanded(
-            child: voiceMode.value
-                ? const AudioInputWidget()
-                : const UserInputWidget(),
+            child:
+                voiceMode.value ? const AudioInputWidget() : UserInputWidget(),
           ),
         ],
       ),
@@ -142,6 +211,9 @@ Message _createMessage(
 
 _sendMessage(WidgetRef ref, TextEditingController controller) async {
   final content = controller.text;
+  if (content.isEmpty) {
+    return;
+  }
   controller.clear();
   return __sendMessage(ref, content);
 }
@@ -192,4 +264,9 @@ _requestChatGPT(WidgetRef ref, String content, {int? sessionId}) async {
   } finally {
     ref.read(chatUiStateProvider.notifier).setRequestLoading(false);
   }
+}
+
+_stopRequest(WidgetRef ref) {
+  ref.read(chatUiStateProvider.notifier).setRequestLoading(false);
+  chatgpt.cancelStreamChat();
 }

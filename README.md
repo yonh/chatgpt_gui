@@ -2,6 +2,11 @@
 
 A simple ChatGPT GUI Project.
 
+# 功能
+- [ ] bug? 可能存在有时因为删除会话，切换会话等原因，新建会话时使用的是之前的会话数据
+- [ ] 输入框支持多行输入
+- [ ] 支持图片发送
+
 ## Getting Started
 copy .env.example to .env and fill in the values
 
