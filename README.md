@@ -97,3 +97,9 @@ flutter pub run flutter_launcher_icons
     可以将`C:\Users\用户名\AppData\Local\Pub\Cache\hosted\pub.dev\record_windows-0.7.1\windows\fmedia` 复制到 `[代码目录]\build\windows\x64\runner\Debug\fmedia`
     或者执行 flutter build windows 到 `build\windows\x64\runner\Release\` 目录下复制
 
+- [x] 7. localstorage 存储目录
+    ### mac: ~/Library/Containers/<PRODUCT_BUNDLE_IDENTIFIER>/Data/Documents
+    在 Flutter 中，`PRODUCT_BUNDLE_IDENTIFIER` 是在 `iOS` 和 `macOS` 项目的配置文件中设置的。
+    这个值是应用的唯一标识符，通常在创建项目时自动生成，但你可以在项目创建后手动修改它。
+    对于 `iOS`，你可以在以下文件中找到并修改它：  `ios/Runner.xcodeproj/project.pbxproj` 
+    对于 `macOS`，你可以在以下文件中找到并修改它：  `macos/Runner/Configs/AppInfo.xcconfig`

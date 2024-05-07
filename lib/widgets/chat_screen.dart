@@ -53,7 +53,13 @@ class ChatScreen extends HookConsumerWidget {
                 ref.read(chatUiStateProvider.notifier).state = ChatUiState();
               },
               icon: const Icon(Icons.add),
-            )
+            ),
+            IconButton(
+              onPressed: () {
+                GoRouter.of(context).push('/settings');
+              },
+              icon: const Icon(Icons.settings),
+            ),
           ],
         ),
         body: Padding(

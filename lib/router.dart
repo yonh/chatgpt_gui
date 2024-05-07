@@ -1,5 +1,6 @@
 import 'package:chatgpt_gui/widgets/chat_history.dart';
 import 'package:chatgpt_gui/widgets/chat_screen.dart';
+import 'package:chatgpt_gui/widgets/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(routes: [
@@ -10,5 +11,9 @@ final router = GoRouter(routes: [
   GoRoute(
     path: '/history',
     builder: (context, state) => ChatHistory(),
-  )
+  ),
+  GoRoute(
+    path: '/settings',
+    builder: (context, state) => const SettingsScreen(),
+  ),
 ]);
