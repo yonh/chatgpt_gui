@@ -1,9 +1,10 @@
-import 'package:chatgpt_gui/env/env.dart';
 import 'package:flutter_tiktoken/flutter_tiktoken.dart';
 import 'package:openai_api/openai_api.dart';
 
+import '../env/env.dart';
 import '../injection.dart';
 import '../models/message.dart';
+import '../widgets/settings_screen.dart';
 
 class ChatGPTService {
   CancellationToken _cancellationToken = CancellationToken();
@@ -20,6 +21,10 @@ class ChatGPTService {
       httpProxy: Env.httpProxy,
     ),
   );
+
+  void updateClientConfig(Settings settings) {
+    client.updateConfigWithSettings(settings);
+  }
 
   Future<ChatCompletionResponse> sendChat(String content) async {
     final request = ChatCompletionRequest(model: Models.gpt3_5Turbo, messages: [
@@ -122,5 +127,30 @@ extension on List<Message> {
         role: e.isUser ? ChatMessageRole.user : ChatMessageRole.assistant,
       ),
     ).toList();
+  }
+}
+
+extension on OpenaiConfig {
+  OpenaiConfig copyWith({
+    String? apiKey,
+    String? baseUrl,
+    String? httpProxy,
+  }) {
+    return OpenaiConfig(
+      apiKey: apiKey ?? this.apiKey,
+      baseUrl: baseUrl ?? this.baseUrl,
+      httpProxy: httpProxy ?? this.httpProxy,
+    );
+  }
+}
+
+extension on OpenaiClient {
+  void updateConfigWithSettings(Settings settings) {
+    var config = OpenaiConfig(
+      apiKey: settings.apiKey,
+      baseUrl: settings.baseUrl,
+      httpProxy: settings.httpProxy,
+    );
+    updateConfig(config);
   }
 }

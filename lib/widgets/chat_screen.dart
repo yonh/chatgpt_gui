@@ -16,18 +16,6 @@ import 'chat_message_list.dart';
 class ChatScreen extends HookConsumerWidget {
   ChatScreen({super.key});
 
-  final _textController = TextEditingController();
-
-  // final List<Message> messages = [
-  //   Message(content: "Hello", isUser: true, timestamp: DateTime.now()),
-  //   Message(content: "How are you?", isUser: false, timestamp: DateTime.now()),
-  //   Message(
-  //       content: "Fine,Thank you. And you?",
-  //       isUser: true,
-  //       timestamp: DateTime.now()),
-  //   Message(content: "I am fine.", isUser: false, timestamp: DateTime.now()),
-  // ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final messages = ref.watch(messageProvider); // 获取数据
@@ -87,23 +75,6 @@ class ChatScreen extends HookConsumerWidget {
               ),
               // const UserInputWidget(),
               const ChatInputWidget(),
-              // TextField(
-              //   enabled: !chatUiState.requestLoading,
-              //   controller: _textController,
-              //   decoration: InputDecoration(
-              //       hintText: 'Type a message', // 显示在输入框内的提示文字
-              //       suffixIcon: IconButton(
-              //         onPressed: () {
-              //           // 这里处理发送事件
-              //           if (_textController.text.isNotEmpty) {
-              //             _sendMessage(ref, _textController);
-              //           }
-              //         },
-              //         icon: const Icon(
-              //           Icons.send,
-              //         ),
-              //       )),
-              // ),
             ],
           ),
         ));

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../env/env.dart';
+import '../injection.dart';
 import '../services/local_store.dart';
 
 final localStoreServiceProvider =
@@ -14,41 +15,35 @@ class SettingsNotifier extends StateNotifier<Settings> {
   final LocalStoreService _localStoreService;
   SettingsNotifier(this._localStoreService)
       : super(Settings(
-            apiKey: Env.apiKey,
-            baseUrl: Env.baseUrl,
-            httpProxy: Env.httpProxy)) {
+            apiKey: Env.apiKey ?? '',
+            baseUrl: Env.baseUrl ?? '',
+            httpProxy: Env.httpProxy ?? '')) {
     _loadSettings();
   }
 
   Future<void> _loadSettings() async {
-    final apiKey = await _localStoreService.getItem<String>('API Key') ?? '';
-    final baseUrl = await _localStoreService.getItem<String>('Base URL') ?? '';
-    final httpProxy =
-        await _localStoreService.getItem<String>('HTTP Proxy') ?? '';
+    final apiKey = await _localStoreService.getItem<String>('API Key');
+    final baseUrl = await _localStoreService.getItem<String>('Base URL');
+    final httpProxy = await _localStoreService.getItem<String>('HTTP Proxy');
 
+    // 如果localStorage中读取不到值，就使用默认值
     state = Settings(
-      apiKey: apiKey,
-      baseUrl: baseUrl,
-      httpProxy: httpProxy,
+      apiKey: apiKey ?? state.apiKey,
+      baseUrl: baseUrl ?? state.baseUrl,
+      httpProxy: httpProxy ?? state.httpProxy,
     );
+
+    chatgpt.updateClientConfig(state);
   }
 
   Future<void> updateSetting(String key, String value) async {
-    switch (key) {
-      case 'API Key':
-        state = Settings(
-            apiKey: value, baseUrl: state.baseUrl, httpProxy: state.httpProxy);
-        break;
-      case 'Base URL':
-        state = Settings(
-            apiKey: state.apiKey, baseUrl: value, httpProxy: state.httpProxy);
-        break;
-      case 'HTTP Proxy':
-        state = Settings(
-            apiKey: state.apiKey, baseUrl: state.baseUrl, httpProxy: value);
-        break;
-    }
+    state = Settings(
+        apiKey: key == 'API Key' ? value : state.apiKey,
+        baseUrl: key == 'Base URL' ? value : state.baseUrl,
+        httpProxy: key == 'HTTP Proxy' ? value : state.httpProxy);
+
     await _localStoreService.setItem(key, value);
+    chatgpt.updateClientConfig(state);
   }
 }
 
