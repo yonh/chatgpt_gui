@@ -7,6 +7,7 @@ A simple ChatGPT GUI Project.
 - [ ] 输入框支持多行输入
 - [ ] 支持图片发送
 - [ ] bug 请求中切换语音输入会导致请求结果不显示
+- [ ] 添加错误请求处理，返回错误，添加retry按钮
 
 ## Getting Started
 copy .env.example to .env and fill in the values

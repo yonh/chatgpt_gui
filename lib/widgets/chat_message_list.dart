@@ -102,28 +102,8 @@ class ReceivedMessageItem extends StatelessWidget {
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Flexible(
-            child: Container(
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(radius),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              margin: const EdgeInsets.only(top: 5, right: 10),
-              // child: Text(message.content),
-              child: MessageContentWidget(
-                message: message,
-                typing: typing,
-              ),
-            ),
-          ),
-          CustomPaint(
-            painter:
-                Triangle(backgroundColor, translateX: -10.0, translateY: 5.0),
-          ),
-          const SizedBox(width: 8),
           CircleAvatar(
               // backgroundImage: NetworkImage(
               //   'https://picsum.photos/40/40',
@@ -140,6 +120,26 @@ class ReceivedMessageItem extends StatelessWidget {
                   height: 40,
                 ),
               )),
+          CustomPaint(
+            painter:
+                Triangle(backgroundColor, translateX: 8.0, translateY: 5.0),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              margin: const EdgeInsets.only(top: 5, right: 10),
+              // child: Text(message.content),
+              child: MessageContentWidget(
+                message: message,
+                typing: typing,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -197,22 +197,8 @@ class SentMessageItem extends StatelessWidget {
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          CircleAvatar(
-            // backgroundImage: NetworkImage(
-            //   'https://picsum.photos/40/40',
-            // ),
-            backgroundColor: message.isUser ? Colors.blue : Colors.grey,
-            foregroundColor: Colors.white,
-            child: Text('Me', style: TextStyle(fontSize: 16)),
-          ),
-
-          const SizedBox(width: 8),
-          CustomPaint(
-            painter:
-                Triangle(backgroundColor, translateX: 0.0, translateY: 5.0),
-          ),
           // Expanded(
           //   child: Column(
           //     crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,6 +226,19 @@ class SentMessageItem extends StatelessWidget {
               // child: Text(message.content),
               child: MessageContentWidget(message: message),
             ),
+          ),
+          //const SizedBox(width: 8),
+          CustomPaint(
+            painter:
+                Triangle(backgroundColor, translateX: -10.0, translateY: 5.0),
+          ),
+          CircleAvatar(
+            // backgroundImage: NetworkImage(
+            //   'https://picsum.photos/40/40',
+            // ),
+            backgroundColor: message.isUser ? Colors.blue : Colors.grey,
+            foregroundColor: Colors.white,
+            child: Text('Me', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
