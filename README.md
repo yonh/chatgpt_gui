@@ -3,7 +3,7 @@
 A simple ChatGPT GUI Project.
 
 # 功能
-- [ ] bug 引入 bitsdojo_window 后窗口无法拖动
+- [x] bug 引入 bitsdojo_window 后窗口无法拖动
 - [ ] bug 新建按钮在新建会话的页面下不会清空输入框内容
 - [ ] bug 切换会话，聊天框内容不会清空
 - [ ] bug? 可能存在有时因为删除会话，切换会话等原因，新建会话时使用的是之前的会话数据

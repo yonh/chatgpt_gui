@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:chatgpt_gui/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktoken/flutter_tiktoken.dart';
@@ -9,6 +6,7 @@ import 'package:flutter_tiktoken/flutter_tiktoken.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'injection.dart';
+import 'utils.dart';
 
 // void main() {
 //   // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
@@ -26,22 +24,6 @@ Future<void> main() async {
 
   // 为了能让组件读取 provider 我们需要将整个应用包裹在 ProviderScope 里面
   runApp(const ProviderScope(child: MyApp()));
-}
-
-void initWindow() {
-  if (isDesktop()) {
-    doWhenWindowReady(() {
-      // const initialSize = Size(600, 450);
-      // appWindow.minSize = initialSize;
-      // appWindow.size = initialSize;
-      appWindow.alignment = Alignment.center;
-      appWindow.show();
-    });
-  }
-}
-
-bool isDesktop() {
-  return Platform.isLinux || Platform.isMacOS || Platform.isWindows;
 }
 
 class MyApp extends StatelessWidget {
