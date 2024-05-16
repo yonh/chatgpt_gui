@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../states/session_state.dart';
+import 'chat_history.dart';
 import 'chat_screen.dart';
 import 'desktop.dart';
 
@@ -13,7 +14,15 @@ class DesktopHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: DesktopWindow(
-      child: ChatScreen(),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 240,
+                child: ChatHistoryWindow(),
+              ),
+              Expanded(child: ChatScreen()),
+            ],
+          ),
     ));
   }
 }

@@ -14,7 +14,7 @@ final mobileRouter = GoRouter(routes: [
   ),
   GoRoute(
     path: '/history',
-    builder: (context, state) => ChatHistory(),
+    builder: (context, state) => ChatHistoryScreen(),
   ),
   GoRoute(
     path: '/settings',
@@ -26,13 +26,5 @@ final desktopRouter = GoRouter(routes: [
   GoRoute(
     path: "/",
     builder: (context, state) => const DesktopHomeScreen(),
-  ),
-  GoRoute(
-    path: '/history',
-    builder: (context, state) => ChatHistory(),
-  ),
-  GoRoute(
-    path: '/settings',
-    builder: (context, state) => const SettingsScreen(),
   ),
 ]);

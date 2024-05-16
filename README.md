@@ -3,6 +3,7 @@
 A simple ChatGPT GUI Project.
 
 # 功能
+- [ ] feature 添加调试模式，添加日志列表页面
 - [x] bug 引入 bitsdojo_window 后窗口无法拖动
 - [ ] bug 切换到非首页页面，仍然无法通过标题栏拖动窗口
 - [ ] bug 新建按钮在新建会话的页面下不会清空输入框内容
@@ -62,7 +63,8 @@ flutter pub run flutter_launcher_icons
 ```
 
 问题：
-- [ ] 1. 如何手动更新数据库结构
+- [ ] 1. 如何手动更新数据库结构 
+    sql文件在 ~/Library/Containers/com.example.chatgptGui/Data/.dart_tool/sqflite_common_ffi/databases/app_database.db
 - [x] 2. 如何通过migration更新数据库结构
         通过 databaseBuilder 的 addMigrations 方法添加 Migration
 - [x] 3. 报错 Envied can only handle types
