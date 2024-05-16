@@ -116,6 +116,44 @@ class ChatHistoryItemWidget extends HookConsumerWidget {
   }
 }
 
+class NewChatButton extends HookConsumerWidget {
+  const NewChatButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      title: SizedBox(
+        height: 40,
+        child: OutlinedButton.icon(
+          style: ButtonStyle(
+            alignment: Alignment.centerLeft,
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            iconColor: MaterialStateProperty.all(Colors.black),
+            foregroundColor: MaterialStateProperty.all(Colors.black),
+          ),
+          onPressed: () {
+            ref
+                .read(sessionStateNotifierProvider.notifier)
+                .setActiveSession(null);
+          },
+          icon: const Icon(
+            Icons.add,
+            size: 16,
+          ),
+          label: const Text("New chat"),
+        ),
+      ),
+    );
+  }
+}
+
+
 Future _deleteConfirm(
     BuildContext context, WidgetRef ref, Session session) async {
   return showDialog(

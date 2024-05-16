@@ -10,7 +10,7 @@ final router = isDesktop() ? desktopRouter : mobileRouter;
 final mobileRouter = GoRouter(routes: [
   GoRoute(
     path: "/",
-    builder: (context, state) => ChatScreen(),
+    builder: (context, state) => HomeScreen(),
   ),
   GoRoute(
     path: '/history',

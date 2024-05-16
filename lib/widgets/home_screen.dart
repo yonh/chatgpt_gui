@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../states/chat_ui_state.dart';
 import '../states/session_state.dart';
 import 'chat_history.dart';
 import 'chat_screen.dart';
 import 'desktop.dart';
+import 'settings_screen.dart';
 
 class DesktopHomeScreen extends StatelessWidget {
   const DesktopHomeScreen({super.key});
@@ -18,7 +20,35 @@ class DesktopHomeScreen extends StatelessWidget {
             children: [
               SizedBox(
                 width: 240,
-                child: ChatHistoryWindow(),
+                child: Column(
+                  children: [
+                    SizedBox(height: 15),
+                    NewChatButton(),
+                    const Divider(),
+                    Expanded(
+                      child:ChatHistoryWindow(),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text("Settings"),
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const AlertDialog(
+                                  title: Text("Settings"),
+                                  content: SizedBox(
+                                    height: 400,
+                                    width: 400,
+                                    child: SettingsWindow(),
+                                  ));
+                            });
+                      },
+                    )
+                  ],
+                )
+                //child: ChatHistoryWindow(),
               ),
               Expanded(child: ChatScreen()),
             ],
@@ -32,9 +62,10 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    chatUiStateProvider
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Desktop'),
+        title: const Text('Chat'),
         actions: [
           IconButton(
             onPressed: () {
@@ -47,6 +78,7 @@ class HomeScreen extends HookConsumerWidget {
               ref
                   .read(sessionStateNotifierProvider.notifier)
                   .setActiveSession(null);
+              ref.read(chatUiStateProvider.notifier).state = ChatUiState();
             },
             icon: const Icon(Icons.add),
           ),

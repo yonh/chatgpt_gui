@@ -24,32 +24,32 @@ class ChatScreen extends HookConsumerWidget {
     final ChatUiState chatUiState = ref.watch(chatUiStateProvider);
     // return Container();
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Chat'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                GoRouter.of(context).push('/history');
-              },
-              icon: const Icon(Icons.history),
-            ),
-            IconButton(
-              onPressed: () {
-                ref
-                    .read(sessionStateNotifierProvider.notifier)
-                    .setActiveSession(null);
-                ref.read(chatUiStateProvider.notifier).state = ChatUiState();
-              },
-              icon: const Icon(Icons.add),
-            ),
-            IconButton(
-              onPressed: () {
-                GoRouter.of(context).push('/settings');
-              },
-              icon: const Icon(Icons.settings),
-            ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   title: const Text('Chat'),
+        //   actions: [
+        //     IconButton(
+        //       onPressed: () {
+        //         GoRouter.of(context).push('/history');
+        //       },
+        //       icon: const Icon(Icons.history),
+        //     ),
+        //     IconButton(
+        //       onPressed: () {
+        //         ref
+        //             .read(sessionStateNotifierProvider.notifier)
+        //             .setActiveSession(null);
+        //         ref.read(chatUiStateProvider.notifier).state = ChatUiState();
+        //       },
+        //       icon: const Icon(Icons.add),
+        //     ),
+        //     IconButton(
+        //       onPressed: () {
+        //         GoRouter.of(context).push('/settings');
+        //       },
+        //       icon: const Icon(Icons.settings),
+        //     ),
+        //   ],
+        // ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -80,3 +80,4 @@ class ChatScreen extends HookConsumerWidget {
         ));
   }
 }
+
