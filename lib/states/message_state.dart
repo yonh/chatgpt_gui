@@ -39,6 +39,20 @@ class MessageList extends StateNotifier<List<Message>> {
       state = [...state]..[index] = m;
     }
   }
+
+  void clearMessages() {
+    print("state: " + state.length.toString());
+    state = [];
+  }
+
+  void loadMessages(int? id) async {
+    if (id == null) {
+      state = [];
+      return;
+    }
+    List<Message> messages = await db.messageDao.findMessagesBySessionId(id);
+    state = messages;
+  }
 }
 
 final messageProvider = StateNotifierProvider<MessageList, List<Message>>(

@@ -25,7 +25,8 @@ class ChatScreen extends HookConsumerWidget {
     // return Container();
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Chat'),
+          title: Text(
+              'Chat - Session ID: ${activeSession?.id ?? "None"}, Message Count: ${messages.length}'),
           actions: [
             IconButton(
               onPressed: () {

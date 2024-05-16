@@ -222,16 +222,22 @@ __sendMessage(WidgetRef ref, String content) async {
   Message message = _createMessage(content);
   final uiState = ref.watch(chatUiStateProvider);
   var active = ref.watch(activeSessionProvider);
-  ref.read(chatUiStateProvider.notifier).confirmModel(); // 确认模型
 
   var sessionId = active?.id ?? 0;
+  print("send message: $content, sessionId: $sessionId");
   if (sessionId <= 0) {
+    ref.read(chatUiStateProvider.notifier).confirmModel(); // 确认模型
+
+    // 在这里清除之前的消息
+    ref.read(messageProvider.notifier).clearMessages();
+
     active = Session(title: content, model: uiState.model);
     // final id = await db.sessionDao.upsertSession(active);
     active = await ref
         .read(sessionStateNotifierProvider.notifier)
         .upsertSession(active);
     sessionId = active.id!;
+    print("send message 2: $content, sessionId: $sessionId");
     ref
         .read(sessionStateNotifierProvider.notifier)
         .setActiveSession(active.copyWith(id: sessionId));

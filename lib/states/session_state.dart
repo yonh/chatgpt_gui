@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../injection.dart';
 import '../models/session.dart';
+import 'message_state.dart';
 
 part 'session_state.freezed.dart';
 part 'session_state.g.dart';
@@ -42,8 +43,13 @@ class SessionStateNotifier extends _$SessionStateNotifier {
   Future<void> deleteSession(Session session) async {
     // 如果删除的是当前激活的会话，则将激活的会话设置为null
     if (state.valueOrNull?.activeSession?.id == session.id) {
+      // // 将当前会话的消息清空
+      // ref.read(messageProvider.notifier).clearMessages();
+
       state = const AsyncValue.loading();
       state = await AsyncValue.guard(() async {
+        print(
+            "delete active session: ${session.id}, active: ${state.valueOrNull?.activeSession}");
         return SessionState(
             sessionList: await _fetchData(), activeSession: null);
       });
@@ -61,6 +67,7 @@ class SessionStateNotifier extends _$SessionStateNotifier {
   Future<void> setActiveSession(Session? session) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
+      ref.read(messageProvider.notifier).loadMessages(session?.id);
       return SessionState(
           sessionList: state.valueOrNull?.sessionList ?? [],
           activeSession: session);

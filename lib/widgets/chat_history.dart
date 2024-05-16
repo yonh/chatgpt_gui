@@ -18,12 +18,35 @@ class ChatHistory extends HookConsumerWidget {
         child: state.when(
             data: (state) {
               return ListView(children: [
+                TextButton(
+                  onPressed: () {
+                    GoRouter.of(context).pop();
+                    ref
+                        .read(sessionStateNotifierProvider.notifier)
+                        .setActiveSession(null);
+                    ref.read(chatUiStateProvider.notifier).state =
+                        ChatUiState();
+                  },
+                  // icon: const Icon(Icons.add),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add),
+                      const Text('New Chat'),
+                    ],
+                  ),
+                ),
                 for (var i in state.sessionList)
                   ListTile(
                     title: Row(
                       children: [
                         Expanded(
-                          child: Text("【" + i.model + "】 " + i.title),
+                          child: Text("【" + i.model + "】 " + i.title,
+                              style: TextStyle(
+                                color: state.activeSession?.id == i.id
+                                    ? Colors.blue
+                                    : null,
+                              )),
                         ),
                         IconButton(
                           onPressed: () {
@@ -54,15 +77,24 @@ class ChatHistory extends HookConsumerWidget {
                     },
                     selected: state.activeSession?.id == i.id,
                   ),
-                IconButton(
+                TextButton(
                   onPressed: () {
                     GoRouter.of(context).pop();
                     ref
                         .read(sessionStateNotifierProvider.notifier)
                         .setActiveSession(null);
+                    ref.read(chatUiStateProvider.notifier).state =
+                        ChatUiState();
                   },
-                  icon: const Icon(Icons.add),
-                )
+                  // icon: const Icon(Icons.add),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add),
+                      const Text('New Chat'),
+                    ],
+                  ),
+                ),
               ]);
             },
             error: (err, stack) => Text("$err"),
@@ -92,6 +124,7 @@ Future _deleteConfirm(
                 ref
                     .read(sessionStateNotifierProvider.notifier)
                     .deleteSession(session);
+
                 Navigator.of(context).pop();
               },
               child: const Text("Delete"),
