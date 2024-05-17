@@ -3,6 +3,7 @@
 A simple ChatGPT GUI Project.
 
 # 功能
+- [ ] update 优化请求停止UI，兼容桌面端和移动端，添加一个停止按钮在聊天框中底部，请求过程中显示，请求结束后隐藏
 - [ ] feature 添加调试模式，添加日志列表页面
 - [x] bug 引入 bitsdojo_window 后窗口无法拖动
 - [ ] bug 切换到非首页页面，仍然无法通过标题栏拖动窗口
