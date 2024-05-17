@@ -1,5 +1,4 @@
 import 'package:chatgpt_gui/widgets/chat_history.dart';
-import 'package:chatgpt_gui/widgets/chat_screen.dart';
 import 'package:chatgpt_gui/widgets/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 

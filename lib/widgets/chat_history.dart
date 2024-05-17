@@ -34,7 +34,8 @@ class ChatHistoryWindow extends HookConsumerWidget {
                 ]);
               },
               error: (err, stack) => Text("$err"),
-              loading: () => const CircularProgressIndicator()),
+              loading: () => const CircularProgressIndicator()
+          ),
     );
   }
 }

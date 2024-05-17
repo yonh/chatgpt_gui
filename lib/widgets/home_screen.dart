@@ -16,43 +16,43 @@ class DesktopHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: DesktopWindow(
-          child: Row(
-            children: [
-              SizedBox(
-                width: 240,
-                child: Column(
-                  children: [
-                    SizedBox(height: 15),
-                    NewChatButton(),
-                    const Divider(),
-                    Expanded(
-                      child:ChatHistoryWindow(),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      leading: const Icon(Icons.settings),
-                      title: const Text("Settings"),
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const AlertDialog(
-                                  title: Text("Settings"),
-                                  content: SizedBox(
-                                    height: 400,
-                                    width: 400,
-                                    child: SettingsWindow(),
-                                  ));
-                            });
-                      },
-                    )
-                  ],
-                )
-                //child: ChatHistoryWindow(),
+      child: Row(
+        children: [
+          SizedBox(
+              width: 240,
+              child: Column(
+                children: [
+                  SizedBox(height: 15),
+                  NewChatButton(),
+                  const Divider(),
+                  Expanded(
+                    child: ChatHistoryWindow(),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: const Text("Settings"),
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const AlertDialog(
+                                title: Text("Settings"),
+                                content: SizedBox(
+                                  height: 400,
+                                  width: 400,
+                                  child: SettingsWindow(),
+                                ));
+                          });
+                    },
+                  )
+                ],
+              )
+              //child: ChatHistoryWindow(),
               ),
-              Expanded(child: ChatScreen()),
-            ],
-          ),
+          Expanded(child: ChatScreen()),
+        ],
+      ),
     ));
   }
 }
@@ -62,17 +62,16 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    chatUiStateProvider
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat'),
         actions: [
-          IconButton(
-            onPressed: () {
-              GoRouter.of(context).push('/history');
-            },
-            icon: const Icon(Icons.history),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     GoRouter.of(context).push('/history');
+          //   },
+          //   icon: const Icon(Icons.history),
+          // ),
           IconButton(
             onPressed: () {
               ref
@@ -82,14 +81,42 @@ class HomeScreen extends HookConsumerWidget {
             },
             icon: const Icon(Icons.add),
           ),
-          IconButton(
-              onPressed: () {
-                GoRouter.of(context).push('/settings');
-              },
-              icon: const Icon(Icons.settings)),
+          // IconButton(
+          //     onPressed: () {
+          //       GoRouter.of(context).push('/settings');
+          //     },
+          //     icon: const Icon(Icons.settings)),
         ],
       ),
       body: ChatScreen(),
+      drawer: Drawer(
+          child: Column(children: [
+        SizedBox(
+          height: 90,
+          child: DrawerHeader(
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            child: Container(
+              width: double.infinity,
+              color: Theme.of(context).primaryColor,
+              child: const Text(
+                "Chat History",
+                style: TextStyle(color: Colors.white, fontSize: 22),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: const ChatHistoryWindow(),
+        ),
+        ListTile(
+          leading: const Icon(Icons.settings),
+          title: const Text("Settings"),
+          onTap: () {
+            Navigator.of(context).pop();
+            GoRouter.of(context).push('/settings');
+          },
+        ),
+      ])),
     );
   }
 }
