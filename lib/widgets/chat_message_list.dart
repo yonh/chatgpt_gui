@@ -13,21 +13,26 @@ import '../states/message_state.dart';
 import '../states/session_state.dart';
 
 class ChatMessageList extends HookConsumerWidget {
+  final ScrollController listController;
+
   const ChatMessageList({
     super.key,
+    required this.listController,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final messages = ref.watch(messageProvider);
     final messages = ref.watch(activeSessionMessagesProvider);
-    final listController = useScrollController();
+    //final listController = useScrollController();
     // ref.listen(messageProvider, (previous, next) {
     ref.listen(activeSessionMessagesProvider, (previous, next) {
-      Future.delayed(const Duration(milliseconds: 50), () {
+      Future.delayed(const Duration(milliseconds: 100), () {
         listController.jumpTo(
           listController.position.maxScrollExtent,
         );
+        logger.t(
+            "jump to bottom......${listController.position.maxScrollExtent}");
       });
     });
 
@@ -355,10 +360,16 @@ class ChatMessageListWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(activeSessionProvider);
+    final scrollController = useScrollController();
+    final chatListKey = GlobalKey();
+
     return Column(
+      key: chatListKey,
       children: [
-        const Expanded(
-          child: ChatMessageList(),
+        Expanded(
+          child: ChatMessageList(
+            listController: scrollController,
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -370,6 +381,32 @@ class ChatMessageListWidget extends HookConsumerWidget {
                 }
               },
               icon: const Icon(Icons.text_snippet),
+            ),
+            IconButton(
+              onPressed: () async {
+                if (active != null) {
+                  final renderbox = chatListKey.currentContext!
+                      .findRenderObject() as RenderBox; // 获取渲染组件宽度
+
+                  // listview滚动到底部
+                  scrollController.animateTo(
+                    scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.linear,
+                  );
+                  // Future.delayed(const Duration(milliseconds: 500));
+                  // 计算 listview 所有的高度
+                  final height = scrollController.position.maxScrollExtent +
+                      scrollController.position.viewportDimension;
+
+                  exportService.exportImage(
+                    active,
+                    context: ref.context,
+                    targetSize: Size(renderbox.size.width + 32, height + 48),
+                  );
+                }
+              },
+              icon: const Icon(Icons.image),
             ),
           ],
         )

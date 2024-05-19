@@ -46,7 +46,8 @@ flutter pub add floor dev:floor_generator
 flutter pub add dev:custom_lint dev:riverpod_lint riverpod_annotation  dev:riverpod_generator
 flutter pub add go_router
 flutter pub add record path_provider
-flutter pub add flutter_launcher_icons 
+flutter pub add flutter_launcher_icons
+flutter pub add screenshot
 ```
 
 ## build_runner
@@ -62,6 +63,10 @@ flutter pub add flutter_launcher_icons
 flutter pub run flutter_launcher_icons:generate
 flutter pub run flutter_launcher_icons
 ```
+
+# 一些项目相关的问题
+导出数据位置：
+    C:\Users\[用户名]\Documents\exports
 
 问题：
 - [ ] 1. 如何手动更新数据库结构 
