@@ -40,7 +40,7 @@ class DesktopHomeScreen extends StatelessWidget {
                                 title: Text("Settings"),
                                 content: SizedBox(
                                   height: 400,
-                                  width: 400,
+                                  width: 500,
                                   child: SettingsWindow(),
                                 ));
                           });
@@ -50,6 +50,10 @@ class DesktopHomeScreen extends StatelessWidget {
               )
               //child: ChatHistoryWindow(),
               ),
+          const VerticalDivider(
+            color: Colors.grey, // 设置分割线的颜色
+            width: 1, // 设置分割线的宽度
+          ),
           Expanded(child: ChatScreen()),
         ],
       ),

@@ -31,10 +31,9 @@ class ChatMessageList extends HookConsumerWidget {
       Future.delayed(const Duration(milliseconds: 200), () {
         listController.jumpTo(
           // 滚动到底部, 有时 maxScrollExtent 取值不准确，导致无法滚动到底部，因此加上一个偏移量保证能够顺利滚动到底部
-          listController.position.maxScrollExtent + 100,
+          listController.position.maxScrollExtent,
         );
-        logger.t(
-            "jump to bottom......${listController.position.maxScrollExtent}");
+        // logger.t("jump to bottom......${listController.position.maxScrollExtent}");
       });
     });
 
@@ -373,66 +372,70 @@ class ChatMessageListWidget extends HookConsumerWidget {
             listController: scrollController,
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () async {
-                if (active != null) {
-                  if (isDesktop()) {
-                    final path = await saveAs(fileName: "${active.title}.md");
-                    if (path == null) return; //取消选择
-                    await exportService.exportMarkdown(active, path: path);
-                  } else {
-                    final output = await exportService.exportMarkdown(active);
-                    if (output == null) return;
-                    shareFiles([output]);
+        if (active != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () async {
+                  if (active != null) {
+                    if (isDesktop()) {
+                      final path = await saveAs(fileName: "${active.title}.md");
+                      if (path == null) return; //取消选择
+                      await exportService.exportMarkdown(active, path: path);
+                    } else {
+                      final output = await exportService.exportMarkdown(active);
+                      if (output == null) return;
+                      shareFiles([output]);
+                    }
                   }
-                }
-              },
-              icon: const Icon(Icons.text_snippet),
-            ),
-            IconButton(
-              onPressed: () async {
-                if (active != null) {
-                  final renderbox = chatListKey.currentContext!
-                      .findRenderObject() as RenderBox; // 获取渲染组件宽度
+                },
+                icon: const Icon(Icons.text_snippet),
+              ),
+              IconButton(
+                onPressed: () async {
+                  if (active != null) {
+                    final renderbox = chatListKey.currentContext!
+                        .findRenderObject() as RenderBox; // 获取渲染组件宽度
 
-                  // listview滚动到底部
-                  scrollController.animateTo(
-                    scrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.linear,
-                  );
-                  // Future.delayed(const Duration(milliseconds: 500));
-                  // 计算 listview 所有的高度
-                  final height = scrollController.position.maxScrollExtent +
-                      scrollController.position.viewportDimension;
+                    // listview滚动到底部
+                    scrollController.animateTo(
+                      scrollController.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.linear,
+                    );
+                    // Future.delayed(const Duration(milliseconds: 500));
+                    // 计算 listview 所有的高度
+                    final height = scrollController.position.maxScrollExtent +
+                        scrollController.position.viewportDimension;
 
-                  if (isDesktop()) {
-                    final path = await saveAs(fileName: "${active.title}.png");
-                    if (path == null) return; //取消选择
-                    final output = await exportService.exportImage(
-                      active,
-                      context: ref.context,
-                      targetSize: Size(renderbox.size.width + 32, height + 48),
-                      path: path,
-                    );
-                  } else {
-                    final output = await exportService.exportImage(
-                      active,
-                      context: ref.context,
-                      targetSize: Size(renderbox.size.width + 32, height + 48),
-                    );
-                    if (output == null) return;
-                    shareFiles([output]);
+                    if (isDesktop()) {
+                      final path =
+                          await saveAs(fileName: "${active.title}.png");
+                      if (path == null) return; //取消选择
+                      final output = await exportService.exportImage(
+                        active,
+                        context: ref.context,
+                        targetSize:
+                            Size(renderbox.size.width + 32, height + 48),
+                        path: path,
+                      );
+                    } else {
+                      final output = await exportService.exportImage(
+                        active,
+                        context: ref.context,
+                        targetSize:
+                            Size(renderbox.size.width + 32, height + 48),
+                      );
+                      if (output == null) return;
+                      shareFiles([output]);
+                    }
                   }
-                }
-              },
-              icon: const Icon(Icons.image),
-            ),
-          ],
-        )
+                },
+                icon: const Icon(Icons.image),
+              ),
+            ],
+          )
       ],
     );
   }

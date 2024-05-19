@@ -18,6 +18,7 @@ A simple ChatGPT GUI Project.
 - [ ] bug 请求中切换语音输入会导致请求结果不显示
 - [ ] 添加错误请求处理，返回错误，添加retry按钮
 - [ ] 添加loading提示，让用户知道当前的传输状态
+- [ ] 可考虑使用 flutter_markdown_latex 支持数学公式
 
 ## Getting Started
 copy .env.example to .env and fill in the values

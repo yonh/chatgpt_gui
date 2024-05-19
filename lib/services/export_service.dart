@@ -6,6 +6,7 @@ import 'package:screenshot/screenshot.dart';
 
 import '../injection.dart';
 import '../models/session.dart';
+import '../theme.dart';
 import '../widgets/chat_message_list.dart';
 
 class ExportService {
@@ -46,7 +47,10 @@ class ExportService {
     // 使用一个 ScrollView 来展示消息列表
     final widget = SingleChildScrollView(
       child: Container(
-        color: const Color(0xFFF1F1F1), // 背景色，我们前面的截图中发现了，背景是透明的，显示会有问题
+        //color: const Color(0xFFF1F1F1), // 背景色，我们前面的截图中发现了，背景是透明的，显示会有问题
+        color: isDarkMode(context!)
+            ? const Color(0xFF1E1E1E)
+            : const Color(0xFFF1F1F1), // 这里根据主题设置背景色
         padding: const EdgeInsets.all(16), // 图片边距
         child: Column(
           children: messages
