@@ -1,4 +1,5 @@
 import 'package:chatgpt_gui/states/chat_ui_state.dart';
+import 'package:chatgpt_gui/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -27,9 +28,10 @@ class ChatMessageList extends HookConsumerWidget {
     //final listController = useScrollController();
     // ref.listen(messageProvider, (previous, next) {
     ref.listen(activeSessionMessagesProvider, (previous, next) {
-      Future.delayed(const Duration(milliseconds: 100), () {
+      Future.delayed(const Duration(milliseconds: 200), () {
         listController.jumpTo(
-          listController.position.maxScrollExtent,
+          // 滚动到底部, 有时 maxScrollExtent 取值不准确，导致无法滚动到底部，因此加上一个偏移量保证能够顺利滚动到底部
+          listController.position.maxScrollExtent + 100,
         );
         logger.t(
             "jump to bottom......${listController.position.maxScrollExtent}");
@@ -375,9 +377,15 @@ class ChatMessageListWidget extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 if (active != null) {
-                  exportService.exportMarkdown(active);
+                  if (isDesktop()) {
+                    final path = await saveAs(fileName: "${active.title}.md");
+                    if (path == null) return; //取消选择
+                    await exportService.exportMarkdown(active, path: path);
+                  } else {
+                    await exportService.exportMarkdown(active);
+                  }
                 }
               },
               icon: const Icon(Icons.text_snippet),
@@ -391,7 +399,7 @@ class ChatMessageListWidget extends HookConsumerWidget {
                   // listview滚动到底部
                   scrollController.animateTo(
                     scrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 200),
                     curve: Curves.linear,
                   );
                   // Future.delayed(const Duration(milliseconds: 500));
@@ -399,10 +407,17 @@ class ChatMessageListWidget extends HookConsumerWidget {
                   final height = scrollController.position.maxScrollExtent +
                       scrollController.position.viewportDimension;
 
-                  exportService.exportImage(
+                  var path = null;
+                  if (isDesktop()) {
+                    path = await saveAs(fileName: "${active.title}.png");
+                    if (path == null) return; //取消选择
+                  }
+
+                  await exportService.exportImage(
                     active,
                     context: ref.context,
                     targetSize: Size(renderbox.size.width + 32, height + 48),
+                    path: path,
                   );
                 }
               },

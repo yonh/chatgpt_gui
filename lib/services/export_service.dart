@@ -9,9 +9,9 @@ import '../models/session.dart';
 import '../widgets/chat_message_list.dart';
 
 class ExportService {
-  void exportMarkdown(
+  Future<String?> exportMarkdown(
     Session session, {
-    String? fileName,
+    String? path,
   }) async {
     final messages = await db.messageDao.findMessagesBySessionId(session.id!);
     final buffer = StringBuffer();
@@ -28,14 +28,17 @@ class ExportService {
     final dir = Directory("${docDir.path}/exports/markdown");
     logger.t("$dir"); // 如果想知道目录是啥，这里可以打印一下
     await dir.create(recursive: true);
-    final file = File("${dir.path}/${fileName ?? session.id}.md");
+    final file = File(path ?? "${dir.path}/${session.id}.md");
+
     await file.writeAsString(buffer.toString());
+    return file.path;
   }
 
-  void exportImage(
+  Future<String?> exportImage(
     Session session, {
     BuildContext? context, //
     Size? targetSize, // 截图大小，为了能够截取合适的大小，请传入组件的实际大小
+    String? path,
   }) async {
     final controller = ScreenshotController();
     // 获取消息
@@ -77,8 +80,15 @@ class ExportService {
     // 保存图片的问题，跟前面导出Markdown的类似
     final docDir = await getApplicationDocumentsDirectory();
     final dir = Directory("${docDir.path}/exports/img");
-    await dir.create(recursive: true);
-    final file = File("${dir.path}/${session.id}.png");
+    final defaultSave = "${dir.path}/${session.id}.png";
+    final file = File(path ?? defaultSave);
+
+    // 如果file所在目录不存在，创建目录
+    file.parent.createSync(recursive: true);
+
+    //await file.create(recursive: true);
     file.writeAsBytes(img); // 写入图片
+
+    return file.path;
   }
 }
