@@ -48,6 +48,8 @@ flutter pub add go_router
 flutter pub add record path_provider
 flutter pub add flutter_launcher_icons
 flutter pub add screenshot
+flutter pub add file_picker
+flutter pub add share_plus
 ```
 
 ## build_runner

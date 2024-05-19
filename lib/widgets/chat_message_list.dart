@@ -384,7 +384,9 @@ class ChatMessageListWidget extends HookConsumerWidget {
                     if (path == null) return; //取消选择
                     await exportService.exportMarkdown(active, path: path);
                   } else {
-                    await exportService.exportMarkdown(active);
+                    final output = await exportService.exportMarkdown(active);
+                    if (output == null) return;
+                    shareFiles([output]);
                   }
                 }
               },
@@ -407,18 +409,24 @@ class ChatMessageListWidget extends HookConsumerWidget {
                   final height = scrollController.position.maxScrollExtent +
                       scrollController.position.viewportDimension;
 
-                  var path = null;
                   if (isDesktop()) {
-                    path = await saveAs(fileName: "${active.title}.png");
+                    final path = await saveAs(fileName: "${active.title}.png");
                     if (path == null) return; //取消选择
+                    final output = await exportService.exportImage(
+                      active,
+                      context: ref.context,
+                      targetSize: Size(renderbox.size.width + 32, height + 48),
+                      path: path,
+                    );
+                  } else {
+                    final output = await exportService.exportImage(
+                      active,
+                      context: ref.context,
+                      targetSize: Size(renderbox.size.width + 32, height + 48),
+                    );
+                    if (output == null) return;
+                    shareFiles([output]);
                   }
-
-                  await exportService.exportImage(
-                    active,
-                    context: ref.context,
-                    targetSize: Size(renderbox.size.width + 32, height + 48),
-                    path: path,
-                  );
                 }
               },
               icon: const Icon(Icons.image),
