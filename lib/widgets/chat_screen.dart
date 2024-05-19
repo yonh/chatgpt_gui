@@ -2,7 +2,6 @@ import 'package:chatgpt_gui/states/chat_ui_state.dart';
 import 'package:chatgpt_gui/states/message_state.dart';
 import 'package:chatgpt_gui/widgets/chat_gpt_model_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../states/session_state.dart';
@@ -51,33 +50,33 @@ class ChatScreen extends HookConsumerWidget {
         //   ],
         // ),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              GptModelWidget(
-                  active: chatUiState.model,
-                  isModelConfirmed: chatUiState.isModelConfirmed,
-                  onModelChanged: (model) {
-                    ref.read(chatUiStateProvider.notifier).model = model;
-                  }),
-              const Expanded(
-                // child: ListView.separated(
-                //   itemBuilder: (context, index) {
-                //     return MessageItem(message: messages[index]);
-                //   },
-                //   itemCount: messages.length, // 消息数量
-                //   separatorBuilder: (context, index) => const Divider(
-                //     // 分割线
-                //     height: 16,
-                //   ),
-                // ),
-                child: ChatMessageList(),
-              ),
-              // const UserInputWidget(),
-              const ChatInputWidget(),
-            ],
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          GptModelWidget(
+              active: chatUiState.model,
+              isModelConfirmed: chatUiState.isModelConfirmed,
+              onModelChanged: (model) {
+                ref.read(chatUiStateProvider.notifier).model = model;
+              }),
+          const Expanded(
+            // child: ListView.separated(
+            //   itemBuilder: (context, index) {
+            //     return MessageItem(message: messages[index]);
+            //   },
+            //   itemCount: messages.length, // 消息数量
+            //   separatorBuilder: (context, index) => const Divider(
+            //     // 分割线
+            //     height: 16,
+            //   ),
+            // ),
+            // child: ChatMessageList(),
+            child: ChatMessageListWidget(),
           ),
-        ));
+          // const UserInputWidget(),
+          const ChatInputWidget(),
+        ],
+      ),
+    ));
   }
 }
-

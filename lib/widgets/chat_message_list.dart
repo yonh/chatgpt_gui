@@ -6,9 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:markdown_widget/config/markdown_generator.dart';
 
+import '../injection.dart';
 import '../markdown/latex.dart';
 import '../models/message.dart';
 import '../states/message_state.dart';
+import '../states/session_state.dart';
 
 class ChatMessageList extends HookConsumerWidget {
   const ChatMessageList({
@@ -342,6 +344,36 @@ class TypingCursor extends HookWidget {
         height: 12,
         color: Colors.black,
       ),
+    );
+  }
+}
+
+class ChatMessageListWidget extends HookConsumerWidget {
+  const ChatMessageListWidget({
+    super.key,
+  });
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final active = ref.watch(activeSessionProvider);
+    return Column(
+      children: [
+        const Expanded(
+          child: ChatMessageList(),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () {
+                if (active != null) {
+                  exportService.exportMarkdown(active);
+                }
+              },
+              icon: const Icon(Icons.text_snippet),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
