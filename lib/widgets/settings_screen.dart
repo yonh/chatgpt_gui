@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../env/env.dart';
 import '../injection.dart';
 import '../services/local_store.dart';
+import '../utils.dart';
 
 final localStoreServiceProvider =
     Provider<LocalStoreService>((ref) => LocalStoreService());

@@ -5,6 +5,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+export 'package:flutter_gen/gen_l10n/app_localizations.dart'
+    show AppLocalizations;
+
 void initWindow() {
   if (isDesktop()) {
     doWhenWindowReady(() {

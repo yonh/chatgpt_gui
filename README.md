@@ -125,7 +125,16 @@ flutter pub run flutter_launcher_icons
     这个值是应用的唯一标识符，通常在创建项目时自动生成，但你可以在项目创建后手动修改它。
     对于 `iOS`，你可以在以下文件中找到并修改它：  `ios/Runner.xcodeproj/project.pbxproj` 
     对于 `macOS`，你可以在以下文件中找到并修改它：  `macos/Runner/Configs/AppInfo.xcconfig`
-
+- [x] 8. 解决无法直接引入 AppLocalizations 的问题
+方法1: 在 lib/下的文件中添加代码
+```dart
+// 方法1 添加 export
+export 'package:flutter_gen/gen_l10n/app_localizations.dart'
+    show AppLocalizations;
+// 方法2 添加别名
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+typedef AppIntl = AppLocalizations;
+```
 
 - 使用 bitsdojo_window 后无窗口显示
 因为官方文档提到需要添加函数, 移除参数 `BDW_HIDE_ON_STARTUP` 即可

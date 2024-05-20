@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:openai_api/openai_api.dart' hide Text;
+
+import '../utils.dart';
 
 class GptModelWidget extends HookWidget {
   final Function(String model)? onModelChanged;

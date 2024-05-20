@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../states/chat_ui_state.dart';
 import '../states/session_state.dart';
+import '../utils.dart';
 import 'chat_history.dart';
 import 'chat_screen.dart';
 import 'desktop.dart';

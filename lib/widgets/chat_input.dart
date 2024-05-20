@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -10,6 +9,7 @@ import '../models/session.dart';
 import '../states/chat_ui_state.dart';
 import '../states/message_state.dart';
 import '../states/session_state.dart';
+import '../utils.dart';
 
 class UserInputWidget extends HookConsumerWidget {
   UserInputWidget({
