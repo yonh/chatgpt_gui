@@ -2,6 +2,7 @@ import 'package:chatgpt_gui/states/chat_ui_state.dart';
 import 'package:chatgpt_gui/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -88,7 +89,7 @@ class ReceivedMessageItem extends StatelessWidget {
             PopupMenuItem(
               padding: EdgeInsets.only(left: 10, right: 0),
               height: 30,
-              child: Text('Copy'),
+              child: Text(AppLocalizations.of(context)!.copy),
               value: 'Copy',
             ),
           ],
@@ -103,7 +104,7 @@ class ReceivedMessageItem extends StatelessWidget {
         Clipboard.setData(ClipboardData(text: message.content));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Copied to clipboard'),
+            content: Text(AppLocalizations.of(context)!.copied),
             duration: const Duration(milliseconds: 1000),
           ),
         );
@@ -183,7 +184,7 @@ class SentMessageItem extends StatelessWidget {
             PopupMenuItem(
               padding: EdgeInsets.only(left: 10, right: 0),
               height: 30,
-              child: Text('Copy'),
+              child: Text(AppLocalizations.of(context)!.copy),
               value: 'Copy',
             ),
           ],
@@ -198,7 +199,7 @@ class SentMessageItem extends StatelessWidget {
         Clipboard.setData(ClipboardData(text: message.content));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Copied to clipboard'),
+            content: Text(AppLocalizations.of(context)!.copied),
             duration: const Duration(milliseconds: 1000),
           ),
         );
@@ -246,7 +247,8 @@ class SentMessageItem extends StatelessWidget {
             // ),
             backgroundColor: message.isUser ? Colors.blue : Colors.grey,
             foregroundColor: Colors.white,
-            child: Text('Me', style: TextStyle(fontSize: 16)),
+            child: Text(AppLocalizations.of(context)!.me,
+                style: TextStyle(fontSize: 16)),
           ),
         ],
       ),

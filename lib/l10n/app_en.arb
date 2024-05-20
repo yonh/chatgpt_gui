@@ -1,0 +1,21 @@
+{
+  "chat":"Chat",
+  "settings":"Settings",
+  "model":"Model",
+  "language":"Language",
+  "new_chat":"New Chat",
+  "type_a_message": "Type a message",
+  "history": "History",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "enter_new_value": "Enter new value",
+  "delete_confirm_message": "Are you sure to delete?",
+  "me": "Me",
+  "copy": "Copy",
+  "copied": "Copied to clipboard",
+  "theme_mode": "Theme Mode",
+  "theme_mode_dark": "Dark",
+  "theme_mode_light": "Light",
+  "theme_mode_system": "System"
+}

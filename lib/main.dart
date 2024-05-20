@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:chatgpt_gui/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_tiktoken/flutter_tiktoken.dart';
-// import 'widgets/chat_screen.dart';
-// import 'package:chatgpt_gui/widgets/chat_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'injection.dart';
@@ -36,14 +37,30 @@ class MyApp extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final Settings settings = ref.watch(settingsProvider);
 
+    // 获取设置语言
+    final language = settings.language == 'system'
+        ? Platform.localeName.split('_').first
+        : settings.language;
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'ChatGPT GUI',
       theme: lightThemeData,
       darkTheme: darkThemeData,
       themeMode: settings.themeMode,
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      // home: ChatScreen(),
+      // localizationsDelegates: [
+      //   AppLocalizations.delegate,
+      //   GlobalMaterialLocalizations.delegate,
+      //   GlobalWidgetsLocalizations.delegate,
+      //   GlobalCupertinoLocalizations.delegate,
+      // ],
+      // supportedLocales: [
+      //   Locale('en'), // English
+      //   Locale('zh'), // Chinese
+      // ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: Locale(language),
       routerConfig: router,
     );
   }

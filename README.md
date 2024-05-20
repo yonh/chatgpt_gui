@@ -51,6 +51,8 @@ flutter pub add flutter_launcher_icons
 flutter pub add screenshot
 flutter pub add file_picker
 flutter pub add share_plus
+flutter pub add flutter_localizations --sdk=flutter
+flutter pub add intl:any
 ```
 
 ## build_runner

@@ -1,0 +1,21 @@
+{
+  "chat":"会话",
+  "settings":"设置",
+  "model":"模型",
+  "language":"语言",
+  "new_chat": "新建会话",
+  "type_a_message": "输入消息",
+  "history": "会话历史",
+  "ok": "确定",
+  "cancel": "取消",
+  "delete": "删除",
+  "enter_new_value": "输入新值",
+  "delete_confirm_message": "确定删除此会话吗？",
+  "me": "我",
+  "copy": "复制",
+  "copied": "已复制到剪贴板",
+  "theme_mode": "主题模式",
+  "theme_mode_dark": "深色",
+  "theme_mode_light": "浅色",
+  "theme_mode_system": "系统"
+}

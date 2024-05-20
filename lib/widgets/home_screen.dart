@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -31,13 +32,15 @@ class DesktopHomeScreen extends StatelessWidget {
                   const Divider(),
                   ListTile(
                     leading: const Icon(Icons.settings),
-                    title: const Text("Settings"),
+                    title: Text(AppLocalizations.of(context)!.settings),
+                    // title: Text(AppLocalizations.of(context)!.settings),
                     onTap: () {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return const AlertDialog(
-                                title: Text("Settings"),
+                            return AlertDialog(
+                                title: Text(
+                                    AppLocalizations.of(context)!.settings),
                                 content: SizedBox(
                                   height: 400,
                                   width: 500,
@@ -68,7 +71,7 @@ class HomeScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: Text(AppLocalizations.of(context)!.chat),
         actions: [
           // IconButton(
           //   onPressed: () {
@@ -114,7 +117,7 @@ class HomeScreen extends HookConsumerWidget {
         ),
         ListTile(
           leading: const Icon(Icons.settings),
-          title: const Text("Settings"),
+          title: Text(AppLocalizations.of(context)!.settings),
           onTap: () {
             Navigator.of(context).pop();
             GoRouter.of(context).push('/settings');

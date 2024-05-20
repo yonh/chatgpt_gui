@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,7 +13,7 @@ class ChatHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("History")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.history)),
       body: const ChatHistoryWindow(),
     );
   }
@@ -150,7 +151,7 @@ class NewChatButton extends HookConsumerWidget {
             Icons.add,
             size: 16,
           ),
-          label: const Text("New chat"),
+          label: Text(AppLocalizations.of(context)!.new_chat),
         ),
       ),
     );
@@ -163,24 +164,23 @@ Future _deleteConfirm(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Delete"),
-          content: const Text("Are you sure to delete?"),
+          title: Text(AppLocalizations.of(context)!.delete),
+          content: Text(AppLocalizations.of(context)!.delete_confirm_message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("Cancel"),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
-              onPressed: () {
-                ref
-                    .read(sessionStateNotifierProvider.notifier)
-                    .deleteSession(session);
-                Navigator.of(context).pop();
-              },
-              child: const Text("Delete"),
-            ),
+                onPressed: () {
+                  ref
+                      .read(sessionStateNotifierProvider.notifier)
+                      .deleteSession(session);
+                  Navigator.of(context).pop();
+                },
+                child: Text(AppLocalizations.of(context)!.delete)),
           ],
         );
       });

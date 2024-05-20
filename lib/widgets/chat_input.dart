@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -72,7 +73,7 @@ class UserInputWidget extends HookConsumerWidget {
         child: TextField(
           controller: _textController,
           decoration: InputDecoration(
-              hintText: 'Type a message', // 显示在输入框内的提示文字
+              hintText: AppLocalizations.of(context)!.type_a_message,
               suffixIcon: SizedBox(
                   width: 40,
                   child: chatUiState.requestLoading
@@ -107,7 +108,7 @@ class UserInputWidget extends HookConsumerWidget {
               // border: OutlineInputBorder(
               //   borderRadius: BorderRadius.circular(8.0),
               // ),
-              hintText: 'Type a message', // 显示在输入框内的提示文字
+              hintText: AppLocalizations.of(context)!.type_a_message,
               suffixIcon: SizedBox(
                   width: 40,
                   child: chatUiState.requestLoading

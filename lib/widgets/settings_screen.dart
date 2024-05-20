@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../env/env.dart';
@@ -18,7 +19,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
             apiKey: Env.apiKey ?? '',
             baseUrl: Env.baseUrl ?? '',
             httpProxy: Env.httpProxy ?? '',
-            themeMode: ThemeMode.system)) {
+            themeMode: ThemeMode.system,
+            language: 'system')) {
     _loadSettings();
   }
 
@@ -27,6 +29,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final baseUrl = await _localStoreService.getItem<String>('Base URL');
     final httpProxy = await _localStoreService.getItem<String>('HTTP Proxy');
     final themeMode = await _localStoreService.getItem<String>('Theme Mode');
+    final language =
+        await _localStoreService.getItem<String>('Language'); // 从本地存储中读取语言设置
 
     // 如果localStorage中读取不到值，就使用默认值
     state = Settings(
@@ -38,6 +42,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
           : themeMode == 'ThemeMode.light'
               ? ThemeMode.light
               : ThemeMode.dark,
+      language: language ?? (state.language ?? 'en'),
     );
 
     chatgpt.updateClientConfig(state);
@@ -48,7 +53,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
         apiKey: state.apiKey,
         baseUrl: state.baseUrl,
         httpProxy: state.httpProxy,
-        themeMode: themeMode);
+        themeMode: themeMode,
+        language: state.language);
 
     await _localStoreService.setItem('Theme Mode', themeMode.toString());
   }
@@ -58,10 +64,23 @@ class SettingsNotifier extends StateNotifier<Settings> {
         apiKey: key == 'API Key' ? value : state.apiKey,
         baseUrl: key == 'Base URL' ? value : state.baseUrl,
         httpProxy: key == 'HTTP Proxy' ? value : state.httpProxy,
-        themeMode: state.themeMode);
+        themeMode: state.themeMode,
+        language: state.language);
 
     await _localStoreService.setItem(key, value);
     chatgpt.updateClientConfig(state);
+  }
+
+  Future<void> updateLanguage(String language) async {
+    state = Settings(
+      apiKey: state.apiKey,
+      baseUrl: state.baseUrl,
+      httpProxy: state.httpProxy,
+      themeMode: state.themeMode,
+      language: language,
+    );
+
+    await _localStoreService.setItem('Language', language);
   }
 }
 
@@ -70,12 +89,14 @@ class Settings {
   final String baseUrl;
   final String httpProxy;
   final ThemeMode themeMode;
+  final String language;
 
   Settings(
       {required this.apiKey,
       required this.baseUrl,
       required this.httpProxy,
-      required this.themeMode});
+      required this.themeMode,
+      required this.language});
 }
 
 class SettingsScreen extends StatelessWidget {
@@ -85,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(AppLocalizations.of(context)!.settings),
       ),
       body: const SettingsWindow(),
     );
@@ -107,73 +128,131 @@ class SettingsWindow extends HookConsumerWidget {
 
     return ListView(
       children: [
-        ...items.map((item) => ListTile(
-              title: Text(item['title'] ?? 'Unknown'),
-              subtitle: Text(item['value'] ?? 'Unknown'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () async {
-                final newValue = await showEditor(
-                    context, item['title'] ?? 'Unknown', item['value'] ?? '');
-                if (newValue != null) {
-                  ref
-                      .read(settingsProvider.notifier)
-                      .updateSetting(item['title']!, newValue);
+        ...items.map((item) => apiSetting(item, context, ref)),
+        themeSetting(settings, ref, context),
+        languageSetting(settings, ref, context),
+      ],
+    );
+  }
+
+  ListTile apiSetting(
+      Map<String, String> item, BuildContext context, WidgetRef ref) {
+    return ListTile(
+      title: Text(item['title'] ?? 'Unknown'),
+      subtitle: Text(item['value'] ?? 'Unknown'),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () async {
+        final newValue = await showEditor(
+            context, item['title'] ?? 'Unknown', item['value'] ?? '');
+        if (newValue != null) {
+          ref
+              .read(settingsProvider.notifier)
+              .updateSetting(item['title']!, newValue);
+        }
+      },
+    );
+  }
+
+  ListTile themeSetting(
+      Settings settings, WidgetRef ref, BuildContext context) {
+    return ListTile(
+      title: Text(AppLocalizations.of(context)!.theme_mode),
+      subtitle: Row(
+        children: [
+          Expanded(
+            child: RadioListTile<ThemeMode>(
+              title: Text(AppLocalizations.of(context)!.theme_mode_system,
+                  style: TextStyle(fontSize: 12)),
+              value: ThemeMode.system,
+              groupValue: settings.themeMode,
+              selected: settings.themeMode == ThemeMode.system,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateThemeMode(value);
                 }
               },
-            )),
-        ListTile(
-          title: const Text('Theme Mode'),
-          subtitle: Row(
-            children: [
-              Expanded(
-                child: RadioListTile<ThemeMode>(
-                  title: const Text('System', style: TextStyle(fontSize: 12)),
-                  value: ThemeMode.system,
-                  groupValue: settings.themeMode,
-                  selected: settings.themeMode == ThemeMode.system,
-                  onChanged: (value) {
-                    if (value != null) {
-                      ref
-                          .read(settingsProvider.notifier)
-                          .updateThemeMode(value);
-                    }
-                  },
-                ),
-              ),
-              Expanded(
-                child: RadioListTile<ThemeMode>(
-                  title: const Text('Light', style: TextStyle(fontSize: 12)),
-                  value: ThemeMode.light,
-                  groupValue: settings.themeMode,
-                  selected: settings.themeMode == ThemeMode.light,
-                  onChanged: (value) {
-                    if (value != null) {
-                      ref
-                          .read(settingsProvider.notifier)
-                          .updateThemeMode(value);
-                    }
-                  },
-                ),
-              ),
-              Expanded(
-                child: RadioListTile<ThemeMode>(
-                  title: const Text('Dark', style: TextStyle(fontSize: 12)),
-                  value: ThemeMode.dark,
-                  groupValue: settings.themeMode,
-                  selected: settings.themeMode == ThemeMode.dark,
-                  onChanged: (value) {
-                    if (value != null) {
-                      ref
-                          .read(settingsProvider.notifier)
-                          .updateThemeMode(value);
-                    }
-                  },
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ],
+          Expanded(
+            child: RadioListTile<ThemeMode>(
+              title: Text(AppLocalizations.of(context)!.theme_mode_light,
+                  style: TextStyle(fontSize: 12)),
+              value: ThemeMode.light,
+              groupValue: settings.themeMode,
+              selected: settings.themeMode == ThemeMode.light,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateThemeMode(value);
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: RadioListTile<ThemeMode>(
+              title: Text(AppLocalizations.of(context)!.theme_mode_dark,
+                  style: TextStyle(fontSize: 12)),
+              value: ThemeMode.dark,
+              groupValue: settings.themeMode,
+              selected: settings.themeMode == ThemeMode.dark,
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateThemeMode(value);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListTile languageSetting(
+      Settings settings, WidgetRef ref, BuildContext context) {
+    return ListTile(
+      title: Text(AppLocalizations.of(context)!.language),
+      subtitle: Row(
+        children: [
+          Expanded(
+            child: RadioListTile<String?>(
+              title: const Text('System', style: TextStyle(fontSize: 12)),
+              value: 'system',
+              groupValue: settings.language,
+              selected: settings.language == 'system',
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateLanguage(value);
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: RadioListTile<String>(
+              title: const Text('English', style: TextStyle(fontSize: 12)),
+              value: 'en',
+              groupValue: settings.language,
+              selected: settings.language == 'en',
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateLanguage(value);
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: RadioListTile<String>(
+              title: const Text('中文', style: TextStyle(fontSize: 12)),
+              value: 'zh',
+              groupValue: settings.language,
+              selected: settings.language == 'zh',
+              onChanged: (value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateLanguage(value);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -185,13 +264,13 @@ class SettingsWindow extends HookConsumerWidget {
       builder: (context) => AlertDialog(
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text('OK'),
+            child: Text(AppLocalizations.of(context)!.ok),
             onPressed: () {
               final text = controller.text;
               controller.clear();
@@ -202,7 +281,8 @@ class SettingsWindow extends HookConsumerWidget {
         title: Text(title),
         content: TextField(
           controller: controller,
-          decoration: InputDecoration(hintText: 'Enter new value'),
+          decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.enter_new_value),
         ),
       ),
     );
