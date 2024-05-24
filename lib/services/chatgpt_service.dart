@@ -45,7 +45,8 @@ class ChatGPTService {
     int tokenCount =
         calculateTokenCount(messages.toChatMessages(), Models.gpt3_5Turbo);
 
-    print('Token count: $tokenCount');
+    // print('Token count: $tokenCount');
+    logger.t("Token count: $tokenCount");
 
     final request = ChatCompletionRequest(
         model: model ?? Models.gpt3_5Turbo,

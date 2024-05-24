@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 
 import '../env/env.dart';
 import '../injection.dart';
 import '../services/local_store.dart';
 import '../utils.dart';
+import 'log_viewer_page.dart'; // Add this line
 
 final localStoreServiceProvider =
     Provider<LocalStoreService>((ref) => LocalStoreService());
@@ -20,7 +22,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
             baseUrl: Env.baseUrl ?? '',
             httpProxy: Env.httpProxy ?? '',
             themeMode: ThemeMode.system,
-            language: 'system')) {
+            language: 'system',
+            logLevel: Level.info)) {
     _loadSettings();
   }
 
@@ -31,6 +34,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final themeMode = await _localStoreService.getItem<String>('Theme Mode');
     final language =
         await _localStoreService.getItem<String>('Language'); // 从本地存储中读取语言设置
+    final logLevel = await _localStoreService.getItem<String>('Log Level');
 
     // 如果localStorage中读取不到值，就使用默认值
     state = Settings(
@@ -43,9 +47,32 @@ class SettingsNotifier extends StateNotifier<Settings> {
               ? ThemeMode.light
               : ThemeMode.dark,
       language: language ?? (state.language ?? 'en'),
+      logLevel: logLevel == 'Level.debug'
+          ? Level.debug
+          : logLevel == 'Level.info'
+              ? Level.info
+              : logLevel == 'Level.warning'
+                  ? Level.warning
+                  : Level.off,
     );
 
     chatgpt.updateClientConfig(state);
+  }
+
+  Future<void> updateLogLevel(Level logLevel) async {
+    state = Settings(
+      apiKey: state.apiKey,
+      baseUrl: state.baseUrl,
+      httpProxy: state.httpProxy,
+      themeMode: state.themeMode,
+      language: state.language,
+      logLevel: logLevel,
+    );
+
+    await _localStoreService.setItem('Log Level', logLevel.toString());
+    // logger = Logger(level: logLevel ?? Level.off);
+    logger =
+        Logger(output: memoryLogOutput, level: logLevel ?? Level.off); // 更新日志级别
   }
 
   Future<void> updateThemeMode(ThemeMode themeMode) async {
@@ -54,7 +81,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
         baseUrl: state.baseUrl,
         httpProxy: state.httpProxy,
         themeMode: themeMode,
-        language: state.language);
+        language: state.language,
+        logLevel: state.logLevel);
 
     await _localStoreService.setItem('Theme Mode', themeMode.toString());
   }
@@ -65,7 +93,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
         baseUrl: key == 'Base URL' ? value : state.baseUrl,
         httpProxy: key == 'HTTP Proxy' ? value : state.httpProxy,
         themeMode: state.themeMode,
-        language: state.language);
+        language: state.language,
+        logLevel: state.logLevel);
 
     await _localStoreService.setItem(key, value);
     chatgpt.updateClientConfig(state);
@@ -78,6 +107,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       httpProxy: state.httpProxy,
       themeMode: state.themeMode,
       language: language,
+      logLevel: state.logLevel,
     );
 
     await _localStoreService.setItem('Language', language);
@@ -90,13 +120,16 @@ class Settings {
   final String httpProxy;
   final ThemeMode themeMode;
   final String language;
+  final Level? logLevel;
 
-  Settings(
-      {required this.apiKey,
-      required this.baseUrl,
-      required this.httpProxy,
-      required this.themeMode,
-      required this.language});
+  Settings({
+    required this.apiKey,
+    required this.baseUrl,
+    required this.httpProxy,
+    required this.themeMode,
+    required this.language,
+    this.logLevel,
+  });
 }
 
 class SettingsScreen extends StatelessWidget {
@@ -128,10 +161,70 @@ class SettingsWindow extends HookConsumerWidget {
 
     return ListView(
       children: [
+        // 日志级别设置 => debug,info,warning, off
+        logLevelSetting(settings, ref, context),
+        // 查看日志 => 查看日志文件
+        ListTile(
+          title: Text(AppLocalizations.of(context)!.view_log),
+          trailing: const Icon(Icons.arrow_forward_ios),
+          onTap: () {
+            // Navigator.of(context).pushNamed('/log');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => LogViewerPage(),
+              ),
+            );
+          },
+        ),
+
         ...items.map((item) => apiSetting(item, context, ref)),
         themeSetting(settings, ref, context),
         languageSetting(settings, ref, context),
       ],
+    );
+  }
+
+  // debug,info,warning, off, 使用下拉列表形式选择日志类型
+  ListTile logLevelSetting(
+      Settings settings, WidgetRef ref, BuildContext context) {
+    return ListTile(
+      title: Text('Log Level'),
+      subtitle: Row(
+        children: [
+          Expanded(
+            child: DropdownButton<Level>(
+              value: settings.logLevel,
+              onChanged: (Level? value) {
+                if (value != null) {
+                  ref.read(settingsProvider.notifier).updateLogLevel(value);
+                }
+              },
+              items: Level.values.map((Level level) {
+                return DropdownMenuItem<Level>(
+                  value: level,
+                  child: Text(level.toString().split('.').last),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+        // children: Level.values.map((level) {
+        //   return Expanded(
+        //     child: RadioListTile<Level>(
+        //       title: Text(level.toString().split('.').last,
+        //           style: TextStyle(fontSize: 12)),
+        //       value: level,
+        //       groupValue: settings.logLevel,
+        //       selected: settings.logLevel == level,
+        //       onChanged: (value) {
+        //         // if (value != null) {
+        //         //   ref.read(settingsProvider.notifier).updateLogLevel(value);
+        //         // }
+        //       },
+        //     ),
+        //   );
+        // }).toList(),
+      ),
     );
   }
 

@@ -68,6 +68,10 @@ flutter pub add intl:any
 flutter pub run flutter_launcher_icons:generate
 flutter pub run flutter_launcher_icons
 ```
+# language support
+```
+flutter gen-l10n
+```
 
 # 一些项目相关的问题
 导出数据位置：

@@ -1,0 +1,118 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+
+  // 初始化窗口
+  doWhenWindowReady(() {
+    final win = appWindow;
+    win.minSize = Size(600, 400);
+    win.size = Size(300, 600);
+    win.alignment = Alignment.center;
+    win.show();
+  });
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      // disable debug
+      debugShowCheckedModeBanner: false,
+      title: 'Prompt Menu',
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blueGrey,
+        scaffoldBackgroundColor: Color(0xFF1E1E1E),
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
+      ),
+      home: Scaffold(
+        body: WindowBorder(
+          color: Colors.transparent,
+          width: 0,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    WindowTitleBarBox(
+                      // child: AppBar(
+                      //   title: Text('Search prompts or ask AI'),
+                      //   backgroundColor: Color(0xFF333333),
+                      //   elevation: 0,
+                      // ),
+                      child: MoveWindow(
+                        child: Text('Search prompts or ask AI'),
+                      ),
+                    ),
+                    TextField(
+                      onSubmitted: demo, // 添加回车监听
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Enter text',
+                      ),
+                    ),
+                    Expanded(child: PromptMenu(onTap: demo)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void demo(String text) {
+    print(text);
+  }
+}
+
+class PromptMenu extends StatelessWidget {
+  final List<String> prompts = [
+    'Explain a random Wikipedia term',
+    'Summarize',
+    'Improve writing',
+    'Fix spelling & grammar',
+    'Simplify language',
+    'Paraphrase',
+    'Translate to English',
+    'Translate to German',
+    'Explain this',
+    '翻译成中文',
+    'Format SQL',
+  ];
+
+  final Function(String) onTap;
+
+  PromptMenu({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView.builder(
+        itemCount: prompts.length,
+        itemBuilder: (context, index) {
+          return Card(
+            color: Color(0xFF2D2D2D),
+            margin: EdgeInsets.symmetric(vertical: 4.0), // 减小间隔
+            child: Transform.scale(
+              scale: 0.9, // 缩小大小
+              child: ListTile(
+                title: Text(
+                  prompts[index],
+                  style: TextStyle(fontSize: 18.0, color: Colors.white),
+                ),
+                onTap: () => onTap(prompts[index]),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
