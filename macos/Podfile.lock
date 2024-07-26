@@ -41,7 +41,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
-  bitsdojo_window_macos: 44e3b8fe3dd463820e0321f6256c5b1c16bb6a00
+  bitsdojo_window_macos: 9a25e14fe27de22e7cd08c6b30224737dc6b0ba2
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   record_macos: 937889e0f2a7a12b6fc14e97a3678e5a18943de6

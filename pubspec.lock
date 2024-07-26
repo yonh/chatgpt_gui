@@ -745,10 +745,10 @@ packages:
     dependency: "direct main"
     description:
       name: openai_api
-      sha256: "33dcda2c36c3e6d641edba999f9379958e5f67b90892af3799d4deddc8321a88"
+      sha256: "9d99b565449729368cf1c9eafe36c892211bf0f235340b2588532abbe22c9e54"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.6"
+    version: "0.3.7"
   package_config:
     dependency: transitive
     description:

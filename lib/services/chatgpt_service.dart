@@ -92,11 +92,19 @@ class ChatGPTService {
   }
 }
 
+// 扩展Models类，添加gpt4o_mini模型
+class ModelsExtra {
+  static const String gpt4oMini = 'gpt-4o-mini';
+  static const String claude_3_haiku = "claude-3-haiku-20240307";
+}
+
 // 最大 token 限制
 final maxTokens = {
   Models.gpt3_5Turbo: 4096,
   Models.gpt3_5Turbo_1106: 4096,
   Models.gpt4: 8192,
+  ModelsExtra.gpt4oMini: 8192,
+  ModelsExtra.claude_3_haiku: 8192,
 };
 
 extension on List<ChatMessage> {

@@ -1,3 +1,4 @@
+import 'package:chatgpt_gui/services/chatgpt_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:openai_api/openai_api.dart' hide Text;
@@ -28,7 +29,9 @@ class GptModelWidget extends HookWidget {
                 items: [
                   Models.gpt3_5Turbo,
                   Models.gpt4,
-                  Models.gpt3_5Turbo_1106
+                  ModelsExtra.gpt4oMini,
+                  Models.gpt3_5Turbo_1106,
+                  ModelsExtra.claude_3_haiku,
                 ].map((e) {
                   return DropdownMenuItem(
                     value: e,
